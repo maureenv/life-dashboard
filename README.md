@@ -80,7 +80,8 @@ Type mongo in terminal to start mongo
 - db.students.remove({}) // deletes everything in this collection
 
 ## React
-
+To run app do ```yarn dev```
+building and deploying: https://zeit.co/docs/examples/next
 ### Connect react to python
 1. Make sure to install yarn in static folder
 2. Add correct path to react build files in Flask and create initial route to index.html
@@ -91,3 +92,6 @@ def index():
     return render_template("index.html")
 ``
 3. "yarn build" when I want to rebuild my site and then do python run.py to view the site
+
+## CSS
+Add css with [NEXT css](https://github.com/zeit/next-plugins/tree/master/packages/next-sass)

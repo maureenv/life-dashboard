@@ -3,15 +3,16 @@ import App, { Container } from 'next/app'
 import React from 'react'
 import withReduxStore from '../lib/with-redux-store'
 import { Provider } from 'react-redux'
+import "../_res/main.scss"
 
 
 class MyApp extends App {
   render () {
-    const {Component, pageProps, reduxStore} = this.props
+    const { Component, reduxStore } = this.props
     return (
       <Container>
         <Provider store={reduxStore}>
-          <Component {...pageProps} />
+          <Component />
         </Provider>
       </Container>
     )

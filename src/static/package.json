@@ -6,9 +6,16 @@
     "start": "next start"
   },
   "dependencies": {
+    "@zeit/next-sass": "^1.0.1",
+    "autoprefixer": "^9.2.1",
     "next": "^7.0.2",
     "next-redux-wrapper": "^2.0.0",
     "next-routes": "^1.4.2",
+    "node-sass": "^4.9.4",
+    "postcss-cli": "^6.0.0",
+    "postcss-cssnext": "^3.1.0",
+    "postcss-easy-import": "^3.0.0",
+    "postcss-load-plugins": "^2.3.0",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "react-redux": "^5.0.7",
