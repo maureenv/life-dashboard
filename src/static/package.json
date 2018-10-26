@@ -8,6 +8,7 @@
   "dependencies": {
     "@zeit/next-sass": "^1.0.1",
     "autoprefixer": "^9.2.1",
+    "cors-anywhere": "^0.4.1",
     "next": "^7.0.2",
     "next-redux-wrapper": "^2.0.0",
     "next-routes": "^1.4.2",

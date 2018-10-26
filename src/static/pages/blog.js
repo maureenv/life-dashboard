@@ -11,17 +11,35 @@ const Title = styled.h1`
 
 class Blog extends Component {
   state = {
-    posts: []
+    testing: 'hi'
+  }
+
+  test = () => {
+    const data = {
+      title: 'cats',
+      content: 'cats are cool'
+    }
+    fetch('http://127.0.0.1:3001/test', {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {'Content-Type': 'application/json'},
+      //mode: 'no-cors',
+      // https://github.com/Rob--W/cors-anywhere
+    })
+    .then(response => response.json())
+    .then(data => this.setState({ testing: data }, () => console.log( data, 'the data in response' )))
+    .catch((err)=> console.log(err, 'the error'))
   }
 
   render() {
     const {
       posts
     } = this.state
-console.log(this.props.currentBlog, 'the current blog in component')
+
     return (
       <div>
         <Title onClick={ () => this.props.setCurrentBlog(Math.random())}> My Blog Posts </Title>
+        <div onClick={ () => this.test() }> Click To Test </div>
       </div>
     )
   }
