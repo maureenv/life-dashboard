@@ -1,9 +1,11 @@
-from flask import Flask, render_template, request, session, jsonify, make_response
 import json
+from flask import Flask, render_template, request, session, jsonify, make_response
+from flask_cors import CORS
 from server.common.database import Database
 from server.models.test import Test
 
 app = Flask(__name__)
+CORS(app)
 #app.config.from_object('config')
 app.secret_key = "123"
 
