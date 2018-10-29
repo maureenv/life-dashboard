@@ -6,22 +6,41 @@ import styled from 'styled-components'
 const Title = styled.h1`
   font-size: 1.5em;
   text-align: center;
-  color: red;
+  color: blue;
 `
+
 
 class Blog extends Component {
   state = {
-    testing: 'hi'
+    title: '',
+    ingredients: [],
+    recipeLink: '',
+    cuisineType: '',
   }
 
   test = () => {
-    const data = {
-      title: 'cats',
-      content: 'cats are cool'
+    const data = this.state
+    console.log(data, 'teh data')
+    const cleanData = {}
+    const directions = []
+    const entries = Object.entries( data )
+    for ( const [key, value] of entries ) {
+      //console.log(key, 'key', value, 'value')
+      if ( key.includes("directions") ) {
+        const number = key.split("_")[0]
+        directions.push({[number]:value})
+      }
     }
-    fetch('http://127.0.0.1:3001/test', {
+    cleanData['directions'] = directions
+    cleanData['title'] = data.title
+    cleanData['recipeLink'] = "https://www.tasteofhome.com/collection/recipes-for-ripe-bananas/view-all/"
+    cleanData['ingredients'] = [{1: 'bananas'}, {2:'apples'}]
+    cleanData['cuisineType'] = data.cuisineType
+    console.log(cleanData, 'the clean data')
+
+    fetch('http://127.0.0.1:3001/recipes', {
       method: "POST",
-      body: JSON.stringify(data),
+      body: JSON.stringify(cleanData),
       headers: {'Content-Type': 'application/json'},
       //mode: 'no-cors',
       // https://github.com/Rob--W/cors-anywhere
@@ -33,13 +52,24 @@ class Blog extends Component {
 
   render() {
     const {
-      posts
+      posts,
+      directions,
+      title,
     } = this.state
+    console.log(this.state, 'the state')
 
     return (
       <div>
         <Title onClick={ () => this.props.setCurrentBlog(Math.random())}> My Blog Posts </Title>
         <div onClick={ () => this.test() }> Click To Test </div>
+        <label>Recipe Title</label><input type="text" onChange={ e => this.setState({ title: e.target.value })}/>
+        <br/>
+        <label>Recipe Link</label><input type="text" onChange={ e => this.setState({ recipeLink: e.target.value })}/>
+        <br/>
+        <label>Cuisine type</label><input type="text" onChange={ e => this.setState({ cuisineType: e.target.value })}/>
+        <br/>
+        <label>Directions</label><input type="text" onBlur={ e => this.setState({ [`${1}_directions`]: e.target.value }) }/>
+        <label>Directions</label><input type="text" onBlur={ e => this.setState({ [`${2}_directions`]: e.target.value }) }/>
       </div>
     )
   }

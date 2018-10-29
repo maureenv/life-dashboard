@@ -1,4 +1,5 @@
 # database class is inheriting from object passed in
+# https://stackoverflow.com/questions/11915770/saving-picture-to-mongodb
 import pymongo
 
 
@@ -11,7 +12,7 @@ class Database(object):
         # because we're not using self, we need to say where URI is coming from. It's coming from teh database class
         # pymongo.MongoClient is what connects you to the database.
         client = pymongo.MongoClient(Database.URI) #(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True)
-        Database.DATABASE = client['test'] #db name (Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), u'blog')
+        Database.DATABASE = client['dashboard'] #db name (Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), u'blog')
 
     @classmethod
     def insert(Cls, collection, data): #collection is the blogs or posts in the DB
