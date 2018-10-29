@@ -46,7 +46,7 @@ class Blog extends Component {
       // https://github.com/Rob--W/cors-anywhere
     })
     .then(response => response.json())
-    .then(data => this.setState({ testing: data }, () => console.log( data, 'the data in response' )))
+    .then(data => console.log(data, 'the response'))
     .catch((err)=> console.log(err, 'the error'))
   }
 

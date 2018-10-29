@@ -5,6 +5,21 @@ from server.common.database import Database
 from server.models.test import Test
 from server.models.recipe import Recipe
 
+# f = open('asdf.jpg', 'wb') write mode plus binary mode
+# f.write(data)
+# {
+#   _id: asdasdf,
+#   name: 'Hot dog',
+#   ingredients: ['hot dog', 'bun'],
+#   images: ['image1.jpg', 'image2.jpg'],
+# }
+# {
+#   _id: asdasdf,
+#   name: 'Hot dog',
+#   ingredients: ['hot dog', 'bun'],
+#   images: ['image1.jpg', 'image2.jpg'],
+# }
+
 app = Flask(__name__)
 CORS(app)
 #app.config.from_object('config')
@@ -36,8 +51,7 @@ def create_recipe():
     recipe_link = data['recipeLink']
     cuisine_type = data['cuisineType']
     # _(self, title, ingredients, directions, recipe_link, cuisine_type, _id=None):
+    print(title, 'title', ingredients, 'ingredients', directions, 'directions')
+    Recipe.create(title, ingredients, directions, recipe_link, cuisine_type)
 
-    new_recipe = Recipe( title, ingredients, directions, recipe_link, cuisine_type )
-    new_recipe.save_to_mongo()
-
-    return 'hi'
+    return jsonify(Recipe.get_recipes())
