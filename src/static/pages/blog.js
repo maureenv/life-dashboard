@@ -20,39 +20,22 @@ class Blog extends Component {
     cuisineType: '',
     image: '',
     blobImage: '',
+    id: '',
   }
 
-  // getBase64 = file => {
-  //   console.log(file, 'the original file')
-  //    var reader = new FileReader();
-  //    reader.readAsDataURL(file);
-  //    reader.onload = function () {
-  //      console.log(reader.result);
-  //    };
-  //    reader.onerror = function (error) {
-  //      console.log('Error: ', error);
-  //    };
-  // }
-  sendImage = img => {
-    console.log(img, img.filename, 'the file name')
+  sendImage = id => {
+    const { image } = this.state
+    console.log(id, 'the id')
     var formData = new FormData()
-  //  console.log(img, 'the img')
-    formData.append("image", img )
-    // for (var i of formData.entries()) {
-    //   console.log(i, 'the form data')
-    // }
+    formData.append("file", image )
+    formData.append("id", id )
 
     const options = {
       method: "POST",
       body: formData,
-      headers: { 'Content-Type': 'multipart/form-data' },
     }
-    delete options.headers['Content-Type']
 
-    fetch('http://127.0.0.1:3001/recipes', options
-      //headers: {'Content-Type': 'multipart/form-data'},
-        //const headers = { 'Content-Type': 'multipart/form-data' }
-    )
+    fetch('http://127.0.0.1:3001/upload', options )
     .then(response => response.blob())
     .then(data => this.setState({ blobImage: urlCreator.createObjectURL( data ) }))
     .catch((err)=> console.log(err, 'the error'))
@@ -77,17 +60,22 @@ class Blog extends Component {
     cleanData['recipeLink'] = "https://www.tasteofhome.com/collection/recipes-for-ripe-bananas/view-all/"
     cleanData['ingredients'] = [{1: 'bananas'}, {2:'apples'}]
     cleanData['cuisineType'] = data.cuisineType
-    cleanData['image'] = data.image
     console.log(cleanData, 'the clean data')
 
-    fetch('http://127.0.0.1:3001/recipes', {
+    fetch('http://127.0.0.1:3001/recipes/new', {
       method: "POST",
       body: JSON.stringify(cleanData),
       headers: {'Content-Type': 'application/json'},
-        //const headers = { 'Content-Type': 'multipart/form-data' }
     })
     .then(response => response.json())
-    .then(data => console.log(data, 'the response'))
+    .then(data => this.setState({
+      id: data._id,
+      cuisineType: data.cuisine_type,
+      directions: data.directions,
+      ingredients: data.ingredients,
+      recipeLink: data.recipe_link,
+      title: data.title
+    }, () => this.sendImage( this.state.id )))
     .catch((err)=> console.log(err, 'the error'))
   }
 
@@ -112,7 +100,7 @@ class Blog extends Component {
         <br/>
         <label>Directions</label><input type="text" onBlur={ e => this.setState({ [`${1}_directions`]: e.target.value }) }/>
         <label>Directions</label><input type="text" onBlur={ e => this.setState({ [`${2}_directions`]: e.target.value }) }/>
-        <label>Image</label><input type="file" onChange={ e => this.sendImage(e.target.files[0])} />
+        <label>Image</label><input type="file" onChange={ e => this.setState({ image: e.target.files[0] }) } />
         <img src={ blobImage } alt="image test" />
       </div>
     )

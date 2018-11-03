@@ -11,7 +11,7 @@ class Recipe(object):
         self.cuisine_type = cuisine_type
 
     @classmethod
-    def create(cls, title, ingredients, directions, recipe_link, cuisine_type, _id=None):
+    def create(Cls, title, ingredients, directions, recipe_link, cuisine_type, _id=None):
         data = {
             'title': title,
             'ingredients': ingredients,
@@ -22,7 +22,7 @@ class Recipe(object):
         }
         Database.insert(collection='recipes', data=data)
 
-        return Recipe(**data)
+        return data
 
     @classmethod
     def get_recipes(Cls, return_models=False):

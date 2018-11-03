@@ -9,26 +9,12 @@ from server.models.recipe import Recipe
 
 UPLOAD_FOLDER = '/Users/maureenvogel/webprojects/images'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
-# http://flask.pocoo.org/docs/1.0/patterns/fileuploads/
-# f = open('asdf.jpg', 'wb') write mode plus binary mode
-# f.write(data)
-# {
-#   _id: asdasdf,
-#   name: 'Hot dog',
-#   ingredients: ['hot dog', 'bun'],
-#   images: ['image1.jpg', 'image2.jpg'],
-# }
-# {
-#   _id: asdasdf,
-#   name: 'Hot dog',
-#   ingredients: ['hot dog', 'bun'],
-#   images: ['image1.jpg', 'image2.jpg'],
-# }
+
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 CORS(app)
-#app.config.from_object('config')
+
 app.secret_key = "123"
 
 @app.before_first_request
@@ -40,38 +26,37 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/recipes', methods=['POST', 'GET'])
+@app.route('/recipes/new', methods=['POST', 'GET'])
 def create_recipe():
+    data = request.get_json()
+    title = data['title']
+    ingredients = data['ingredients']
+    directions = data['directions']
+    recipe_link = data['recipeLink']
+    cuisine_type = data['cuisineType']
+
+    recipe = Recipe.create(title, ingredients, directions, recipe_link, cuisine_type)
+    # return jsonify(Recipe.get_recipes())
+    return jsonify(recipe)
+
+@app.route('/upload', methods=['POST'])
+def upload_file():
     if request.method == 'POST':
-        if 'image' not in request.files:
-            print('file not in request.files')
-            flash('No file part')
+        if 'file' not in request.files:
+            # flash('No file part')
             return 'No file part'
-        file = request.files['image']
+        id = request.form['id']
+        print(id, 'the id')
+        file = request.files['file']
         file_prefix = file.filename.rsplit('.', 1)[1].lower()
-        file.filename = "abcd" + "." + file_prefix
+        file.filename = id + "." + file_prefix
         print(file, 'the file')
-        # if user does not select file, browser also
-        # submit an empty part without filename
         if file.filename == '':
             flash('No selected file')
             return 'No selected file'
+
         if file and allowed_file(file.filename):
             print('in allowed files')
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
-
-
-    # data = request.get_json()
-    # title = data['title']
-    # ingredients = data['ingredients']
-    # directions = data['directions']
-    # recipe_link = data['recipeLink']
-    # cuisine_type = data['cuisineType']
-    # # _(self, title, ingredients, directions, recipe_link, cuisine_type, _id=None):
-    # #print(title, 'title', ingredients, 'ingredients', directions, 'directions')
-    # Recipe.create(title, ingredients, directions, recipe_link, cuisine_type)
-    #
-    # return jsonify(Recipe.get_recipes())
-    return 'hi'
