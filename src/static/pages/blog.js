@@ -34,6 +34,7 @@ class Blog extends Component {
   //    };
   // }
   sendImage = img => {
+    console.log(img, img.filename, 'the file name')
     var formData = new FormData()
   //  console.log(img, 'the img')
     formData.append("image", img )

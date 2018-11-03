@@ -48,6 +48,8 @@ def create_recipe():
             flash('No file part')
             return 'No file part'
         file = request.files['image']
+        file_prefix = file.filename.rsplit('.', 1)[1].lower()
+        file.filename = "abcd" + "." + file_prefix
         print(file, 'the file')
         # if user does not select file, browser also
         # submit an empty part without filename
