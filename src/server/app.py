@@ -1,6 +1,6 @@
 import json
 import os
-from flask import Flask, flash, url_for, render_template, request, session, jsonify, make_response
+from flask import Flask, flash, url_for, redirect, render_template, request, session, jsonify, make_response, send_from_directory
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from server.common.database import Database
@@ -58,8 +58,7 @@ def create_recipe():
             print('in allowed files')
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            # return redirect(url_for('uploaded_file',
-            #                         filename=filename))
+            return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 
     # data = request.get_json()

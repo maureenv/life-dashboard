@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { NavLink } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import window from 'global'
 //import Blog from '../containers/Blog'
 const Title = styled.h1`
   font-size: 1.5em;
@@ -9,6 +10,7 @@ const Title = styled.h1`
   color: blue;
 `
 
+const urlCreator = window.URL || window.webkitURL;
 
 class Blog extends Component {
   state = {
@@ -17,6 +19,7 @@ class Blog extends Component {
     recipeLink: '',
     cuisineType: '',
     image: '',
+    blobImage: '',
   }
 
   // getBase64 = file => {
@@ -32,11 +35,11 @@ class Blog extends Component {
   // }
   sendImage = img => {
     var formData = new FormData()
-    console.log(img, 'the img')
+  //  console.log(img, 'the img')
     formData.append("image", img )
-    for (var i of formData.entries()) {
-      console.log(i, 'the form data')
-    }
+    // for (var i of formData.entries()) {
+    //   console.log(i, 'the form data')
+    // }
 
     const options = {
       method: "POST",
@@ -49,8 +52,8 @@ class Blog extends Component {
       //headers: {'Content-Type': 'multipart/form-data'},
         //const headers = { 'Content-Type': 'multipart/form-data' }
     )
-    .then(response => response.json())
-    .then(data => console.log(data, 'the response'))
+    .then(response => response.blob())
+    .then(data => this.setState({ blobImage: urlCreator.createObjectURL( data ) }))
     .catch((err)=> console.log(err, 'the error'))
 
   }
@@ -92,6 +95,7 @@ class Blog extends Component {
       posts,
       directions,
       title,
+      blobImage,
     } = this.state
     console.log(this.state, 'the state')
 
@@ -108,6 +112,7 @@ class Blog extends Component {
         <label>Directions</label><input type="text" onBlur={ e => this.setState({ [`${1}_directions`]: e.target.value }) }/>
         <label>Directions</label><input type="text" onBlur={ e => this.setState({ [`${2}_directions`]: e.target.value }) }/>
         <label>Image</label><input type="file" onChange={ e => this.sendImage(e.target.files[0])} />
+        <img src={ blobImage } alt="image test" />
       </div>
     )
   }
