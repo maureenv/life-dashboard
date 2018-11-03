@@ -11,6 +11,7 @@
     "cors-anywhere": "^0.4.1",
     "global": "^4.3.2",
     "next": "^7.0.2",
+    "next-images": "^1.0.1",
     "next-redux-wrapper": "^2.0.0",
     "next-routes": "^1.4.2",
     "node-sass": "^4.9.4",

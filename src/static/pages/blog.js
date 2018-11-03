@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import window from 'global'
+import doge from '../_res/images/doge-coin-2.png'
 //import Blog from '../containers/Blog'
 const Title = styled.h1`
   font-size: 1.5em;
@@ -21,6 +22,18 @@ class Blog extends Component {
     image: '',
     blobImage: '',
     id: '',
+    recipes: [],
+  }
+
+  componentDidMount() {
+    this.getRecipes()
+  }
+
+  getRecipes = () => {
+    fetch('http://127.0.0.1:3001/recipes')
+    .then(response => response.json())
+    .then(data => this.setState({ recipes: data }))
+    .catch((err)=> console.log(err, 'the error'))
   }
 
   sendImage = id => {
@@ -42,7 +55,7 @@ class Blog extends Component {
 
   }
 
-  test = () => {
+  createRecipe = () => {
     const data = this.state
     console.log(data, 'teh data')
     const cleanData = {}
@@ -85,13 +98,21 @@ class Blog extends Component {
       directions,
       title,
       blobImage,
+      recipes,
     } = this.state
     console.log(this.state, 'the state')
 
     return (
       <div>
+        { recipes.map( r =>
+          <div>
+            <p>{ r.title }</p>
+            <p>{ r.cuisine_type }</p>
+            <img src={ require(`../_res/serverImages/${ r._id }.png`)}/>
+          </div>
+        )}
         <Title onClick={ () => this.props.setCurrentBlog(Math.random())}> My Blog Posts </Title>
-        <div onClick={ () => this.test() }> Click To Test </div>
+        <div onClick={ () => this.createRecipe() }> Click To Test </div>
         <label>Recipe Title</label><input type="text" onChange={ e => this.setState({ title: e.target.value })}/>
         <br/>
         <label>Recipe Link</label><input type="text" onChange={ e => this.setState({ recipeLink: e.target.value })}/>

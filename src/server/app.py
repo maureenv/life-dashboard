@@ -7,9 +7,8 @@ from server.common.database import Database
 from server.models.test import Test
 from server.models.recipe import Recipe
 
-UPLOAD_FOLDER = '/Users/maureenvogel/webprojects/images'
+UPLOAD_FOLDER = '/Users/maureenvogel/webprojects/python/life-dashboard/src/static/_res/serverImages'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
-
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -25,6 +24,11 @@ def initialize_database():
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/recipes')
+def get_recipes():
+    print('getting all recipes')
+    return jsonify(Recipe.get_recipes())
 
 @app.route('/recipes/new', methods=['POST', 'GET'])
 def create_recipe():
