@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { createStore } from 'redux'
 import rootReducer from '../reducers'
 
@@ -6,6 +6,7 @@ import rootReducer from '../reducers'
 const store = createStore( rootReducer )
 const isServer = typeof window === 'undefined'
 const __NEXT_REDUX_STORE__ = '__NEXT_REDUX_STORE__'
+
 
 function getOrCreateStore() {
   // Always make a new store if server, otherwise state is shared between requests
@@ -20,8 +21,9 @@ function getOrCreateStore() {
   return window[__NEXT_REDUX_STORE__]
 }
 
-export default (App) => {
-  return class AppWithRedux extends React.Component {
+
+export default ( App ) => {
+  return class AppWithRedux extends Component {
     static async getInitialProps (appContext) {
       // Get or Create the store with `undefined` as initialState
       // This allows you to set a custom default initialState
@@ -32,7 +34,7 @@ export default (App) => {
 
       let appProps = {}
       if (typeof App.getInitialProps === 'function') {
-        appProps = await App.getInitialProps(appContext)
+        appProps = await App.getInitialProps( appContext )
       }
 
       return {
@@ -48,7 +50,7 @@ export default (App) => {
     }
 
     render () {
-      return <App {...this.props} reduxStore={this.reduxStore} />
+      return <App {...this.props} reduxStore={ this.reduxStore } />
     }
   }
 }

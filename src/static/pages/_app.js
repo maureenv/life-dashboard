@@ -1,7 +1,7 @@
 
 import App, { Container } from 'next/app'
 import React from 'react'
-import withReduxStore from '../lib/with-redux-store'
+import withReduxStore from '../store/configureStore'
 import { Provider } from 'react-redux'
 //import "../_res/main.scss"
 
@@ -11,7 +11,7 @@ class MyApp extends App {
     const { Component, reduxStore } = this.props
     return (
       <Container>
-        <Provider store={reduxStore}>
+        <Provider store={ reduxStore }>
           <Component />
         </Provider>
       </Container>

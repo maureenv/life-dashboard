@@ -17,7 +17,7 @@ export const blogs = ( state = initialState, action ) => {
         blogs: action.blogs,
       }
     case 'SET_CURRENT_BLOG':
-    console.log(action.currentBlog, 'current blog in reducer')
+    //console.log(action.currentBlog, 'current blog in reducer')
       return {
         ...state,
         currentBlog: action.currentBlog

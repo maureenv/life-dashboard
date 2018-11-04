@@ -102,7 +102,7 @@ class Recipes extends Component {
       blobImage,
       recipes,
     } = this.state
-    console.log(this.state, 'the state')
+    console.log(this.props.currentBlog, 'the current blog in component')
 
     return (
       <div>
