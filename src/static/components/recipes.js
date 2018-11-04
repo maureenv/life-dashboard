@@ -28,14 +28,7 @@ class Recipes extends Component {
   }
 
   componentDidMount() {
-    this.getRecipes()
-  }
-
-  getRecipes = () => {
-    fetch('http://127.0.0.1:3001/recipes')
-    .then(response => response.json())
-    .then(data => this.setState({ recipes: data }))
-    .catch((err)=> console.log(err, 'the error'))
+    this.props.getRecipes()
   }
 
   sendImage = id => {
@@ -100,9 +93,11 @@ class Recipes extends Component {
       directions,
       title,
       blobImage,
-      recipes,
     } = this.state
-    console.log(this.props.currentBlog, 'the current blog in component')
+
+    const {
+      recipes
+    } = this.props
 
     return (
       <div>
@@ -132,8 +127,12 @@ class Recipes extends Component {
 
 
 Recipes.propTypes = {
+  recipes: PropTypes.object,
+
   currentBlog: PropTypes.string,
   setCurrentBlog: PropTypes.func,
+
+  getRecipes: PropTypes.func,
 }
 
 

@@ -1,23 +1,21 @@
 import { connect } from 'react-redux'
 import actions from '../store/actions'
+import api from '../store/api'
 import Recipes from '../components/recipes'
 
 
 const mapStateToProps = state => {
-  console.log(state, 'the state in blog container')
-  const { currentBlog } = state.blogs
-
-  return { currentBlog }
+  const { recipes } = state.recipes
+  console.log(recipes, 'the recipes')
+  return { recipes }
 }
 
 const mapDispatchToProps = dispatch => {
+  const getRecipes = () => api.getRecipes( dispatch )
+
   return {
-    setCurrentBlog: id => dispatch(actions.setCurrentBlog( id )),
-    setBlogs: blogs => dispatch(actions.setBlogs(blogs))
+    getRecipes,
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)( Recipes )
+export default connect( mapStateToProps, mapDispatchToProps )( Recipes )
