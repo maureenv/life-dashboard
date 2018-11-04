@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { setBlogs, setCurrentBlog } from '../actions/blog'
+import actions from '../store/actions'
 import Recipes from '../components/recipes'
 
 
@@ -12,8 +12,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    setCurrentBlog: id => dispatch(setCurrentBlog( id )),
-    setBlogs: blogs => dispatch(setBlogs(blogs))
+    setCurrentBlog: id => dispatch(actions.setCurrentBlog( id )),
+    setBlogs: blogs => dispatch(actions.setBlogs(blogs))
   }
 }
 

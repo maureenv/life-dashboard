@@ -1,7 +1,7 @@
 import {
   SET_BLOGS,
   SET_CURRENT_BLOG,
-} from '../actions/blog'
+} from './actions'
 
 const initialState = {
   blogs: [],
