@@ -3,8 +3,10 @@ import { NavLink } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import window from 'global'
-import doge from '../_res/images/doge-coin-2.png'
-//import Blog from '../containers/Blog'
+
+//import Blog from '../container/Blog'
+import Main from '../components/pageLayout'
+
 const Title = styled.h1`
   font-size: 1.5em;
   text-align: center;
@@ -13,7 +15,7 @@ const Title = styled.h1`
 
 const urlCreator = window.URL || window.webkitURL;
 
-class Blog extends Component {
+class Recipes extends Component {
   state = {
     title: '',
     ingredients: [],
@@ -129,10 +131,10 @@ class Blog extends Component {
 }
 
 
-Blog.propTypes = {
+Recipes.propTypes = {
   currentBlog: PropTypes.string,
   setCurrentBlog: PropTypes.func,
 }
 
 
-export default Blog
+export default Recipes

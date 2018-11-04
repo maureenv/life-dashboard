@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { setBlogs, setCurrentBlog } from '../actions/blog'
-import Blog from '../pages/blog'
+import Recipes from '../components/recipes'
 
 
 const mapStateToProps = state => {
@@ -20,4 +20,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Blog)
+)( Recipes )
