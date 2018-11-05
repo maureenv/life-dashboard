@@ -5,17 +5,20 @@ import Recipes from '../components/recipes'
 
 
 const mapStateToProps = state => {
-  const { recipes } = state.recipes
-  console.log(recipes, 'the recipes')
-  return { recipes }
+  const { recipe, recipes } = state.recipes
+  return { recipe, recipes }
 }
+
 
 const mapDispatchToProps = dispatch => {
   const getRecipes = () => api.getRecipes( dispatch )
+  const createRecipe = recipe => api.createRecipe( dispatch, recipe )
 
   return {
     getRecipes,
+    createRecipe,
   }
 }
+
 
 export default connect( mapStateToProps, mapDispatchToProps )( Recipes )

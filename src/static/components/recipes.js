@@ -2,9 +2,8 @@ import React, { Component } from 'react'
 import { NavLink } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import window from 'global'
 
-//import Blog from '../container/Blog'
+
 import Main from '../components/pageLayout'
 
 const Title = styled.h1`
@@ -13,7 +12,6 @@ const Title = styled.h1`
   color: blue;
 `
 
-const urlCreator = window.URL || window.webkitURL;
 
 class Recipes extends Component {
   state = {
@@ -22,7 +20,6 @@ class Recipes extends Component {
     recipeLink: '',
     cuisineType: '',
     image: '',
-    blobImage: '',
     id: '',
     recipes: [],
   }
@@ -31,60 +28,16 @@ class Recipes extends Component {
     this.props.getRecipes()
   }
 
-  sendImage = id => {
-    const { image } = this.state
-    console.log(id, 'the id')
-    var formData = new FormData()
-    formData.append("file", image )
-    formData.append("id", id )
-
-    const options = {
-      method: "POST",
-      body: formData,
+  componentWillReceiveProps( nextProps ) {
+    console.log(nextProps, 'the next props')
+    if ( nextProps.recipes !== this.props.recipes ) {
+      this.setState({ recipes: nextProps.recipes })
     }
-
-    fetch('http://127.0.0.1:3001/upload', options )
-    .then(response => response.blob())
-    .then(data => this.setState({ blobImage: urlCreator.createObjectURL( data ) }))
-    .catch((err)=> console.log(err, 'the error'))
-
   }
 
   createRecipe = () => {
-    const data = this.state
-    console.log(data, 'teh data')
-    const cleanData = {}
-    const directions = []
-    const entries = Object.entries( data )
-    for ( const [key, value] of entries ) {
-      //console.log(key, 'key', value, 'value')
-      if ( key.includes("directions") ) {
-        const number = key.split("_")[0]
-        directions.push({[number]:value})
-      }
-    }
-    cleanData['directions'] = directions
-    cleanData['title'] = data.title
-    cleanData['recipeLink'] = "https://www.tasteofhome.com/collection/recipes-for-ripe-bananas/view-all/"
-    cleanData['ingredients'] = [{1: 'bananas'}, {2:'apples'}]
-    cleanData['cuisineType'] = data.cuisineType
-    console.log(cleanData, 'the clean data')
-
-    fetch('http://127.0.0.1:3001/recipes/new', {
-      method: "POST",
-      body: JSON.stringify(cleanData),
-      headers: {'Content-Type': 'application/json'},
-    })
-    .then(response => response.json())
-    .then(data => this.setState({
-      id: data._id,
-      cuisineType: data.cuisine_type,
-      directions: data.directions,
-      ingredients: data.ingredients,
-      recipeLink: data.recipe_link,
-      title: data.title
-    }, () => this.sendImage( this.state.id )))
-    .catch((err)=> console.log(err, 'the error'))
+    this.props.createRecipe( this.state )
+    this.props.getRecipes()
   }
 
   render() {
@@ -92,23 +45,19 @@ class Recipes extends Component {
       posts,
       directions,
       title,
-      blobImage,
+      recipes,
     } = this.state
-
-    const {
-      recipes
-    } = this.props
 
     return (
       <div>
         { recipes.map( r =>
-          <div>
+          <div key={ r.id }>
             <p>{ r.title }</p>
-            <p>{ r.cuisine_type }</p>
-            <img src={ require(`../_res/serverImages/${ r._id }.png`)}/>
+            <p>{ r.cuisineType }</p>
+            <img src={ require(`../_res/serverImages/${ r.id }.png`)}/>
           </div>
         )}
-        <Title onClick={ () => this.props.setCurrentBlog(Math.random())}> My Blog Posts </Title>
+
         <div onClick={ () => this.createRecipe() }> Click To Test </div>
         <label>Recipe Title</label><input type="text" onChange={ e => this.setState({ title: e.target.value })}/>
         <br/>
@@ -119,7 +68,6 @@ class Recipes extends Component {
         <label>Directions</label><input type="text" onBlur={ e => this.setState({ [`${1}_directions`]: e.target.value }) }/>
         <label>Directions</label><input type="text" onBlur={ e => this.setState({ [`${2}_directions`]: e.target.value }) }/>
         <label>Image</label><input type="file" onChange={ e => this.setState({ image: e.target.files[0] }) } />
-        <img src={ blobImage } alt="image test" />
       </div>
     )
   }
@@ -127,12 +75,11 @@ class Recipes extends Component {
 
 
 Recipes.propTypes = {
-  recipes: PropTypes.object,
-
-  currentBlog: PropTypes.string,
-  setCurrentBlog: PropTypes.func,
+  recipe: PropTypes.object,
+  recipes: PropTypes.array,
 
   getRecipes: PropTypes.func,
+  createRecipe: PropTypes.func,
 }
 
 

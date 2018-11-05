@@ -46,7 +46,6 @@ export default ( App ) => {
     constructor (props) {
       super(props)
       this.reduxStore = getOrCreateStore()
-      console.log(this.reduxStore, 'the redux store')
     }
 
     render () {

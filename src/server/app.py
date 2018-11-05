@@ -36,8 +36,8 @@ def create_recipe():
     title = data['title']
     ingredients = data['ingredients']
     directions = data['directions']
-    recipe_link = data['recipeLink']
-    cuisine_type = data['cuisineType']
+    recipe_link = data['recipe_link']
+    cuisine_type = data['cuisine_type']
 
     recipe = Recipe.create(title, ingredients, directions, recipe_link, cuisine_type)
     # return jsonify(Recipe.get_recipes())
