@@ -9,29 +9,31 @@ const links = [
 })
 
 const Nav = () => (
-  <nav>
-    <ul>
-      <li>
-        <Link prefetch href="/">
-          <a>Home</a>
-        </Link>
-      </li>
-      <li>
-      <Link href="/recipes">
-        <a>Recipes</a>
-      </Link>
-      </li>
-      <ul>
-        {links.map(({ key, href, label }) => (
-          <li key={key}>
-            <Link href={href}>
-              <a>{label}</a>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </ul>
-  </nav>
+  <div></div>
 )
+
+// <nav>
+//   <ul>
+//     <li>
+//       <Link prefetch href="/">
+//         <a>Home</a>
+//       </Link>
+//     </li>
+//     <li>
+//     <Link href="/recipes">
+//       <a>Recipes</a>
+//     </Link>
+//     </li>
+//     <ul>
+//       {links.map(({ key, href, label }) => (
+//         <li key={key}>
+//           <Link href={href}>
+//             <a>{label}</a>
+//           </Link>
+//         </li>
+//       ))}
+//     </ul>
+//   </ul>
+// </nav>
 
 export default Nav

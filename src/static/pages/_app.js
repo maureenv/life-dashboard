@@ -1,9 +1,17 @@
-
 import App, { Container } from 'next/app'
 import React from 'react'
 import withReduxStore from '../store/configureStore'
 import { Provider } from 'react-redux'
-//import "../_res/main.scss"
+import { createGlobalStyle } from 'styled-components'
+import reset from 'styled-reset'
+
+const GlobalStyle = createGlobalStyle`
+  ${reset}
+  @import url('https://fonts.googleapis.com/css?family=Anton|Roboto:300,400,500,700');
+  body {
+    background: #f5f5f5;
+  }
+`
 
 
 class MyApp extends App {
@@ -11,6 +19,7 @@ class MyApp extends App {
     const { Component, reduxStore } = this.props
     return (
       <Container>
+        <GlobalStyle/>
         <Provider store={ reduxStore }>
           <Component />
         </Provider>
