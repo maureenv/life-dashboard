@@ -114,7 +114,21 @@ class Recipe extends Component {
 
   createRecipe = () => {
     this.props.createRecipe( this.state )
-    //this.props.getRecipes()
+  }
+
+  getDirections = () => {
+    const { directions } = this.state.recipe
+    return directions.map( i =>
+        <div key={ Object.keys( i )}>
+          <div>{ Object.keys( i ) }</div>
+          <Direction value={ Object.values( i ) } disabled={ false }></Direction>
+        </div>
+    )
+
+    // for ( const [key, value] of directions ) {
+    //   console.log(key, 'key', value, 'value')
+    //   return <Direction key={ key } value={ value } disabled={ false }></Direction>
+    // }
   }
 
   render() {
@@ -140,9 +154,7 @@ class Recipe extends Component {
             })}
             <Divider/>
             <SubTitle> Directions </SubTitle>
-            { recipe.directions.map( d => {
-              return <Direction key={ d } value={ d } disabled={ false }></Direction>
-            })}
+            { this.getDirections() }
           </RecipeContainerInner>
         </RecipeContainer>
     {/*  <div onClick={ () => this.createRecipe() }> Click To Test </div>

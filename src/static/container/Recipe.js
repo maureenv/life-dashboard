@@ -11,17 +11,4 @@ const mapStateToProps = state => {
 }
 
 
-// const mapDispatchToProps = dispatch => {
-//   const getRecipe = id => api.getRecipe( dispatch, id )
-//   const getRecipes = () => api.getRecipes( dispatch )
-//   const createRecipe = recipe => api.createRecipe( dispatch, recipe )
-//
-//   return {
-//     getRecipe,
-//     getRecipes,
-//     createRecipe,
-//   }
-// }
-
-
 export default connect( mapStateToProps, undefined )( Recipe )
