@@ -1,26 +1,144 @@
-import React from 'react'
+import React, { Component } from 'react'
+import { NavLink } from 'react-router-dom'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
 import Link from 'next/link'
-import Router, { withRouter } from 'next/router'
 
-const href = {
-  pathname: '/recipes', // the real page that is being used
-  query: { name: 'zeit', time: 'test' }
+
+const Hero = styled.div`
+  background: url(${ props => props.bg }) no-repeat center center;
+  background-size: cover;
+  width: 100%;
+  height: 30vh;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  z-index: 0;
+  &::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgb(0,0,0);
+    background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+  }
+`
+
+const HeroTitle = styled.h1`
+  color: #f5f5f5;
+  position: relative;
+  z-index: 1;
+  text-transform: uppercase;
+  font-size: 100px;
+  margin-bottom: -10px;
+  font-family: 'Anton', sans-serif;
+  text-shadow: -3px 0px 11px rgba(0,0,0,0.7);
+`
+
+const RecipeContainer = styled.div`
+  width: 100%;
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+const RecipeContainerInner = styled.div`
+  max-width: 800px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+`
+
+const SubTitle = styled.h2`
+  font-family: 'Anton', sans-serif;
+  font-size: 40px;
+  color: #666;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  display: block;
+`
+
+const Ingredient = styled.p`
+  color: #666;
+`
+
+
+
+class Recipe extends Component {
+  state = {
+    title: '',
+    ingredients: [],
+    recipeLink: '',
+    cuisineType: '',
+    image: '',
+    id: '',
+    recipe: {},
+  }
+
+  componentWillMount() {
+    this.setState({ recipe: this.props.recipe })
+  }
+
+  componentWillReceiveProps( nextProps ) {
+    if ( nextProps.recipe !== this.props.recipe ) {
+      this.setState({ recipe: nextProps.recipe })
+    }
+  }
+
+  createRecipe = () => {
+    this.props.createRecipe( this.state )
+    this.props.getRecipes()
+  }
+
+  render() {
+    const {
+      posts,
+      directions,
+      title,
+      recipe,
+    } = this.state
+    console.log(recipe, 'the recipe in state' )
+    const ingredients = [ 'Meat 1lb', 'Eggs 2', 'Mirin 3oz', 'Soysauce 1tbs', ]
+
+    return (
+      <div>
+        <Hero bg={ require(`../_res/serverImages/${ recipe.id }.jpg`)}>
+          <HeroTitle>{ recipe.title }</HeroTitle>
+        </Hero>
+        <RecipeContainer>
+          <RecipeContainerInner>
+            <SubTitle> Ingredients </SubTitle>
+            <div>
+              { ingredients.map( i => {
+                return <Ingredient>{ i }</Ingredient>
+              })}
+            </div>
+          </RecipeContainerInner>
+        </RecipeContainer>
+    {/*  <div onClick={ () => this.createRecipe() }> Click To Test </div>
+      <label>Recipe Title</label><input type="text" onChange={ e => this.setState({ title: e.target.value })}/>
+      <br/>
+      <label>Recipe Link</label><input type="text" onChange={ e => this.setState({ recipeLink: e.target.value })}/>
+      <br/>
+      <label>Cuisine type</label><input type="text" onChange={ e => this.setState({ cuisineType: e.target.value })}/>
+      <br/>
+      <label>Directions</label><input type="text" onBlur={ e => this.setState({ [`${1}_directions`]: e.target.value }) }/>
+      <label>Directions</label><input type="text" onBlur={ e => this.setState({ [`${2}_directions`]: e.target.value }) }/>
+      <label>Image</label><input type="file" onChange={ e => this.setState({ image: e.target.files[0] }) } />*/}
+      </div>
+    )
+  }
 }
 
-const as = {
-  pathname: '/recipes/testing', // what you want the new url name to be 
-  hash: '' // hash for the title
+
+Recipe.propTypes = {
+  recipe: PropTypes.object,
+
+  createRecipe: PropTypes.func,
 }
 
-const handleClick = () => Router.push(href, as)
 
-
-export default withRouter(({ router: { query } }) => (
-    <div>
-      <div>on recipe component</div>
-      <button onClick={handleClick}>Go to /about/zeit</button>
-    </div>
-))
-
-
-//export default Recipe
+export default Recipe
