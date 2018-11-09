@@ -59,12 +59,35 @@ const SubTitle = styled.h2`
   letter-spacing: 1px;
   text-transform: uppercase;
   display: block;
+  margin-bottom: 20px;
 `
 
-const Ingredient = styled.p`
+const Ingredient = styled.input`
   color: #666;
+  font-family: 'Roboto', sans-serif;
+  font-size: 18px;
+  margin-bottom: 10px;
+  display: block;
+  background: none;
+  border: none;
+  padding: 3px 0;
 `
 
+const Direction = styled.input`
+  color: #666;
+  font-family: 'Roboto', sans-serif;
+  font-size: 18px;
+  margin-bottom: 10px;
+  display: block;
+  background: none;
+  border: none;
+  padding: 3px 0;
+`
+
+const Divider = styled.div`
+  width: 100%;
+  height: 50px;
+`
 
 
 class Recipe extends Component {
@@ -79,6 +102,7 @@ class Recipe extends Component {
   }
 
   componentWillMount() {
+    console.log(this.props.recipe, 'the recipe in props')
     this.setState({ recipe: this.props.recipe })
   }
 
@@ -90,7 +114,7 @@ class Recipe extends Component {
 
   createRecipe = () => {
     this.props.createRecipe( this.state )
-    this.props.getRecipes()
+    //this.props.getRecipes()
   }
 
   render() {
@@ -100,7 +124,7 @@ class Recipe extends Component {
       title,
       recipe,
     } = this.state
-    console.log(recipe, 'the recipe in state' )
+
     const ingredients = [ 'Meat 1lb', 'Eggs 2', 'Mirin 3oz', 'Soysauce 1tbs', ]
 
     return (
@@ -111,11 +135,14 @@ class Recipe extends Component {
         <RecipeContainer>
           <RecipeContainerInner>
             <SubTitle> Ingredients </SubTitle>
-            <div>
-              { ingredients.map( i => {
-                return <Ingredient>{ i }</Ingredient>
-              })}
-            </div>
+            { ingredients.map( i => {
+              return <Ingredient key={ i } value={ i } disabled={ false }></Ingredient>
+            })}
+            <Divider/>
+            <SubTitle> Directions </SubTitle>
+            { recipe.directions.map( d => {
+              return <Direction key={ d } value={ d } disabled={ false }></Direction>
+            })}
           </RecipeContainerInner>
         </RecipeContainer>
     {/*  <div onClick={ () => this.createRecipe() }> Click To Test </div>

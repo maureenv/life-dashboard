@@ -30,6 +30,12 @@ def get_recipes():
     print('getting all recipes')
     return jsonify(Recipe.get_recipes())
 
+@app.route('/recipes/<string:id>')
+def get_recipe(id):
+    print(jsonify(Recipe.get_recipe(id)), 'the recipe I found')
+    #return jsonify(Recipe.get_recipes())
+    return jsonify(Recipe.get_recipe(id))
+
 @app.route('/recipes/new', methods=['POST', 'GET'])
 def create_recipe():
     data = request.get_json()

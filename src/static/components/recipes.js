@@ -69,6 +69,10 @@ class Recipes extends Component {
     }
   }
 
+  linkToRecipe = id => {
+    this.props.getRecipe( id )
+  }
+          //  <Link href={{ pathname: '/recipe', query: r.id }} as={{ pathname: `/recipe/${ r.title.replace(" ", "-")}`}}>
   render() {
     const { recipes } = this.props
 
@@ -76,11 +80,9 @@ class Recipes extends Component {
       <RecipesContainer>
         <RecipesContainerInner>
           { recipes.map( r =>
-            <Link href={{ pathname: '/recipe', query: r }} as={{ pathname: `/recipe/${ r.title.replace(" ", "-")}`}}>
-            <RecipeCard bg={ require(`../_res/serverImages/${ r.id }.jpg`)}>
+            <RecipeCard bg={ require(`../_res/serverImages/${ r.id }.jpg`)} onClick={ () => this.linkToRecipe( r.id ) }>
               <RecipeTitle>{ r.title }</RecipeTitle>
             </RecipeCard>
-            </Link>
           )}
           </RecipesContainerInner>
       </RecipesContainer>
@@ -93,6 +95,7 @@ Recipes.propTypes = {
   recipes: PropTypes.array,
 
   getRecipes: PropTypes.func,
+  getRecipe: PropTypes.func,
 }
 
 

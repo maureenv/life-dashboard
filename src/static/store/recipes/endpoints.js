@@ -1,3 +1,5 @@
+import Router from 'next/router'
+
 import actions from '../actions'
 import presenters from '../presenters'
 import api from '../api'
@@ -16,6 +18,17 @@ export const createRecipe = ( dispatch, recipe ) => {
     dispatch( actions.setRecipe( presenters.responseGeneric( data ) ))
   })
   .catch(( err )=> console.log( err, 'the error' ))
+}
+
+
+export const getRecipe = ( dispatch, id ) => {
+  fetch( `http://127.0.0.1:3001/recipes/${ id }` )
+  .then( response => response.json() )
+  .then( data => {
+    dispatch( actions.setRecipe( presenters.responseGeneric( data ) ))
+    Router.push('/recipe')
+  })
+  .catch(( err ) => console.log( err, 'the error' ))
 }
 
 
