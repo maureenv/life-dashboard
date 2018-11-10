@@ -15,7 +15,6 @@ const Hero = styled.div`
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  overflow: hidden;
   position: relative;
   z-index: 0;
   &::after {
@@ -23,15 +22,18 @@ const Hero = styled.div`
     position: absolute;
     width: 100%;
     height: 100%;
+    bottom: 0;
     background: rgb(0,0,0);
     background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
   }
 `
 
-const HeroTitle = styled.h1`
+const HeroTitle = styled.div`
   color: #f5f5f5;
-  position: relative;
   z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  bottom: 0;
   text-transform: uppercase;
   font-size: 100px;
   margin-bottom: -10px;
@@ -41,7 +43,9 @@ const HeroTitle = styled.h1`
 
 const RecipeContainer = styled.div`
   width: 100%;
-  margin-top: 30px;
+  background: #f5f5f5;
+  position: relative;
+  z-index: 1;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -73,8 +77,8 @@ const Ingredient = styled.div`
   display: block;
   background: none;
   border: none;
-  padding: 3px 0;
-  width: 100%;
+  padding: 3px 10px;
+  min-width: 150px;
 `
 
 const Direction = styled.div`
@@ -86,9 +90,9 @@ const Direction = styled.div`
   display: block;
   background: none;
   border: none;
-  padding: 3px 0;
-  width: 100%;
+  padding: 3px 10px;
   overflow-wrap: break-word;
+  min-width: 150px;
 `
 
 const Divider = styled.div`
@@ -111,7 +115,6 @@ const Step = styled.div`
   height: 30px;
   text-align: center;
   line-height: 12px;
-  margin-right: 10px;
 `
 
 const VideoContainer = styled.div`
@@ -184,27 +187,57 @@ class Recipe extends Component {
     }
   }
 
-  getContent = ({ content, key, tagName }) => {
-    const isEditable = true
-    const stepNumber = Object.keys( content )[0]
-    const valuePosition = this.state[key][stepNumber -1]
-    const value = valuePosition && Object.values( valuePosition )[0]
+  updateSingleField = ({ contentKey, value }) => {
+    this.setState({ [contentKey]: value })
+  }
 
+  editSingleField = ({ value, key, tagName }) => {
     return (
-      <StepContainer key={ stepNumber }>
-        <Step>{ stepNumber }</Step>
-        <ContentEditable
-          tagName={ tagName }
-          className="my-class"
-          content={ value }
-          editable={ true }
-          multiLine={ true }
-          contentKey={ key }
-          arrayPosition={ stepNumber - 1 }
-          onChange={ this.contentChange }
-        />
-      </StepContainer>
+      <ContentEditable
+        tagName={ tagName }
+        content={ value }
+        editable={ true }
+        multiLine={ true }
+        contentKey={ key }
+        onChange={ this.updateSingleField }
+      />
     )
+  }
+
+  getContent = ({ content, key, tagName }) => {
+    return content.map( c => {
+      const stepNumber = Object.keys( c )[0]
+      const valuePosition = this.state[key][stepNumber -1]
+      const value = valuePosition && Object.values( valuePosition )[0]
+
+      return (
+        <StepContainer key={ stepNumber }>
+          <Step>{ stepNumber }</Step>
+          <ContentEditable
+            tagName={ tagName }
+            content={ value }
+            editable={ true }
+            multiLine={ true }
+            contentKey={ key }
+            arrayPosition={ stepNumber - 1 }
+            onChange={ this.contentChange }
+          />
+        </StepContainer>
+      )
+    })
+  }
+
+  addEditableFields = () => {
+    const { directions, ingredients } = this.state
+    if ( Object.values( ingredients[ingredients.length -1 ] )[0] !== ( "Add Ingredient" || "" ) ) {
+      const newArray = [ ...ingredients, { [ingredients.length + 1 ]: "Add Ingredient" } ]
+      this.setState({ ingredients: newArray })
+    }
+
+    if ( Object.values( directions[directions.length -1 ] )[0] !== ( "Add Direction" || "" ) ) {
+      const newArray = [ ...directions, { [directions.length + 1 ]: "Add Direction" } ]
+      this.setState({ directions: newArray })
+    }
   }
 
   render() {
@@ -216,25 +249,29 @@ class Recipe extends Component {
       directions,
       ingredients,
     } = this.state
-    console.log(ingredients, 'the directions')
 
     const {
       recipe
     } = this.props
-    const isEditable = false
+    const isEditable = true
+
+    if ( isEditable ) {
+      this.addEditableFields()
+    }
 
     return (
       <div>
         <Hero bg={ require(`../_res/serverImages/${ id }.jpg`)}>
-          <HeroTitle>{ isEditable ? 'Add Recipe Name' : title }</HeroTitle>
+          { isEditable ? this.editSingleField({ value: title, key: 'title', tagName: HeroTitle }) : <HeroTitle>{ title }</HeroTitle> }
         </Hero>
         <RecipeContainer>
           <RecipeContainerInner>
+            <Divider/>
             <SubTitle> Ingredients </SubTitle>
-            { ingredients.map( i => this.getContent({ content: i , key: 'ingredients', tagName: Ingredient }))}
+              { this.getContent({ content: ingredients, key: 'ingredients', tagName: Ingredient }) }
             <Divider/>
             <SubTitle> Directions </SubTitle>
-            { directions.map( i => this.getContent({ content: i , key: 'directions', tagName: Direction }))}
+            { this.getContent({ content: directions , key: 'directions', tagName: Direction }) }
             <Divider/>
             <VideoContainer>
               <Iframe width="560" height="315" src={ recipeLink } frameBorder="0" allow="autoplay; encrypted-media" allowFullScreen></Iframe>
