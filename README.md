@@ -1,3 +1,5 @@
+<!-- https://www.youtube.com/watch?v=E_eMhH1M37I --> connect to iphone debugger
+mobile at home 192.168.1.8:3000
 # Life Dashboard
 A dashboard for all of life's necessities.
 
@@ -79,6 +81,46 @@ Type mongo in terminal to start mongo
 - db.students.remove({"name":"jose"}) // finds any element that matches this and deletes it
 - db.students.remove({}) // deletes everything in this collection
 
+### Update data
+```
+{
+  _id: 1,
+  item: "TBD",
+  stock: 0,
+  info: { publisher: "1111", pages: 430 },
+  tags: [ "technology", "computer" ],
+  ratings: [ { by: "ijk", rating: 4 }, { by: "lmn", rating: 5 } ],
+  reorder: false
+}
+```
+how to update [db.collection.update()](https://docs.mongodb.com/manual/reference/method/db.collection.update/)
+```
+db.books.update(
+   { "_id": "1" },
+   {
+     $inc: { stock: 5 },
+     $set: {
+       "item": "ABC123",
+       "info.publisher": "2222",
+       "tags": [ "software" ],
+       "ratings.1": { by: "xyz", rating: 3 }
+     }
+   }
+)
+```
+will return
+```
+{
+  "_id" : 1,
+  "item" : "ABC123",
+  "stock" : 5,
+  "info" : { "publisher" : "2222", "pages" : 430 },
+  "tags" : [ "software" ],
+  "ratings" : [ { "by" : "ijk", "rating" : 4 }, { "by" : "xyz", "rating" : 3 } ],
+  "reorder" : false
+}
+```
+
 ## React
 To run app do ```yarn dev```
 building and deploying: https://zeit.co/docs/examples/next
@@ -95,3 +137,5 @@ def index():
 
 ## CSS
 Add css with [NEXT css](https://github.com/zeit/next-plugins/tree/master/packages/next-sass)
+
+<!-- { "_id" : "d3c4749ca7e34fb3958e3ee5f6ec8925", "recipe_link" : "https://www.youtube.com/watch?v=gCQGDWlVN50", "ingredients" : [ ], "title" : "Gyudon", "directions" : [ { "1" : "Put dashi, soy sauce, sugar, mirin, and sake in a large pan and bring to a boil over medium heat." }, { "2" : "Add onion slices and simmer for a few minutes or until softened." } ], "cuisine_type" : "Japanese" } -->
