@@ -62,7 +62,7 @@ const SubTitle = styled.h2`
   margin-bottom: 20px;
 `
 
-const Ingredient = styled.input`
+const Ingredient = styled.textarea`
   color: #666;
   font-family: 'Roboto', sans-serif;
   font-size: 18px;
@@ -71,9 +71,10 @@ const Ingredient = styled.input`
   background: none;
   border: none;
   padding: 3px 0;
+  width: 100%;
 `
 
-const Direction = styled.input`
+const Direction = styled.textarea`
   color: #666;
   font-family: 'Roboto', sans-serif;
   font-size: 18px;
@@ -82,6 +83,8 @@ const Direction = styled.input`
   background: none;
   border: none;
   padding: 3px 0;
+  width: 100%;
+  overflow-wrap: break-word;
 `
 
 const Divider = styled.div`
@@ -89,62 +92,90 @@ const Divider = styled.div`
   height: 50px;
 `
 
+const StepContainer = styled.div`
+  display: flex;
+`
+
+const Step = styled.div`
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 20px;
+  background: red;
+  color: #fff;
+  font-family: 'Anton', sans-serif;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  line-height: 12px;
+  margin-right: 10px;
+`
+
 
 class Recipe extends Component {
-  state = {
-    title: '',
-    ingredients: [],
-    recipeLink: '',
-    cuisineType: '',
-    image: '',
-    id: '',
-    recipe: {},
-  }
+
+  state = {}
 
   componentWillMount() {
-    console.log(this.props.recipe, 'the recipe in props')
-    this.setState({ recipe: this.props.recipe })
+    this.buildState( this.props.recipe )
   }
 
   componentWillReceiveProps( nextProps ) {
     if ( nextProps.recipe !== this.props.recipe ) {
-      this.setState({ recipe: nextProps.recipe })
+      this.buildState( nextProps.recipe )
     }
+  }
+
+  buildState( recipe ) {
+    const newState = {}
+    newState['title'] = recipe.title
+    newState['cuisineType'] = recipe.cuisineType
+    newState['id'] = recipe.id
+    newState['recipeLink'] = recipe.recipeLink
+
+    recipe.directions.map( d => {
+      newState[`${ Object.keys( d ) }_directions`] = Object.values( d )[0]
+    })
+
+    recipe.ingredients.map( i => {
+      newState[`${ Object.keys( i ) }_ingredients`] = Object.values( i )[0]
+    })
+    this.setState( newState )
   }
 
   createRecipe = () => {
     this.props.createRecipe( this.state )
   }
 
-  getDirections = () => {
-    const { directions } = this.state.recipe
-    return directions.map( i =>
-        <div key={ Object.keys( i )}>
-          <div>{ Object.keys( i ) }</div>
-          <Direction value={ Object.values( i ) } disabled={ false }></Direction>
-        </div>
-    )
+  getDirections = d => {
+    const stepNumber = Object.keys( d )
+    const direction = Object.values( d )
 
-    // for ( const [key, value] of directions ) {
-    //   console.log(key, 'key', value, 'value')
-    //   return <Direction key={ key } value={ value } disabled={ false }></Direction>
-    // }
+    return (
+      <StepContainer key={ Object.keys( d )}>
+        <Step>{ stepNumber }</Step>
+        <Direction value={ this.state[`${ stepNumber }_directions`] || direction } disabled={ false } onChange={ e => this.setState({ [`${ stepNumber }_directions`]: e.target.value }) }></Direction>
+      </StepContainer>
+    )
   }
 
   render() {
     const {
-      posts,
-      directions,
       title,
-      recipe,
+      cuisineType,
+      recipeLink,
+      id,
     } = this.state
+    const {
+      recipe
+    } = this.props
 
     const ingredients = [ 'Meat 1lb', 'Eggs 2', 'Mirin 3oz', 'Soysauce 1tbs', ]
+    console.log(this.state, 'the state')
 
     return (
       <div>
-        <Hero bg={ require(`../_res/serverImages/${ recipe.id }.jpg`)}>
-          <HeroTitle>{ recipe.title }</HeroTitle>
+        <Hero bg={ require(`../_res/serverImages/${ id }.jpg`)}>
+          <HeroTitle>{ title }</HeroTitle>
         </Hero>
         <RecipeContainer>
           <RecipeContainerInner>
@@ -154,7 +185,7 @@ class Recipe extends Component {
             })}
             <Divider/>
             <SubTitle> Directions </SubTitle>
-            { this.getDirections() }
+            { recipe.directions.map( d => this.getDirections( d ) )}
           </RecipeContainerInner>
         </RecipeContainer>
     {/*  <div onClick={ () => this.createRecipe() }> Click To Test </div>
