@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import Link from 'next/link'
+import ContentEditable from './contentEditable'
 
 
 const Hero = styled.div`
@@ -146,14 +147,27 @@ class Recipe extends Component {
     this.props.createRecipe( this.state )
   }
 
+  contentChange = (key, value) => {
+      console.log(key, 'the key in content change', value, 'the value')
+      this.setState({ [`${ key }_directions`]: value })
+  }
+        /*<Direction value={ this.state[`${ stepNumber }_directions`] } disabled={ false } onChange={ e => this.setState({ [`${ stepNumber }_directions`]: e.target.value }) }></Direction>*/
   getDirections = d => {
-    const stepNumber = Object.keys( d )
-    const direction = Object.values( d )
+    const stepNumber = Object.keys( d )[0]
+    const direction = Object.values( d )[0]
 
     return (
-      <StepContainer key={ Object.keys( d )}>
+      <StepContainer key={ stepNumber }>
         <Step>{ stepNumber }</Step>
-        <Direction value={ this.state[`${ stepNumber }_directions`] || direction } disabled={ false } onChange={ e => this.setState({ [`${ stepNumber }_directions`]: e.target.value }) }></Direction>
+        <ContentEditable
+          tagName="div"
+          className="my-class"
+          content={ this.state[`${ stepNumber }_directions`] }
+          editable={true}
+          multiLine={ true }
+          contentKey={ stepNumber }
+          onChange={ this.contentChange }
+        />
       </StepContainer>
     )
   }
@@ -170,7 +184,6 @@ class Recipe extends Component {
     } = this.props
 
     const ingredients = [ 'Meat 1lb', 'Eggs 2', 'Mirin 3oz', 'Soysauce 1tbs', ]
-    console.log(this.state, 'the state')
 
     return (
       <div>
