@@ -180,6 +180,7 @@ class Recipe extends Component {
   }
 
   contentChange = ({ contentKey, value, arrayPosition }) => {
+    console.log( value, 'the value')
     if ( value ) {
       const valuesArray = [ ...this.state[ contentKey ] ]
       valuesArray[ arrayPosition ] = { [arrayPosition + 1]: value }
@@ -205,10 +206,10 @@ class Recipe extends Component {
   }
 
   getContent = ({ content, key, tagName }) => {
-    return content.map( c => {
-      const stepNumber = Object.keys( c )[0]
+      const stepNumber = Object.keys( content )[0]
       const valuePosition = this.state[key][stepNumber -1]
       const value = valuePosition && Object.values( valuePosition )[0]
+      const newEditableValue = value === "Add Ingredient" || value === "Add Direction"
 
       return (
         <StepContainer key={ stepNumber }>
@@ -217,14 +218,14 @@ class Recipe extends Component {
             tagName={ tagName }
             content={ value }
             editable={ true }
+            style={{ color: newEditableValue && "#a7a7a7" }}
             multiLine={ true }
             contentKey={ key }
             arrayPosition={ stepNumber - 1 }
-            onChange={ this.contentChange }
+            onBlur={ this.contentChange }
           />
         </StepContainer>
       )
-    })
   }
 
   addEditableFields = () => {
@@ -268,10 +269,10 @@ class Recipe extends Component {
           <RecipeContainerInner>
             <Divider/>
             <SubTitle> Ingredients </SubTitle>
-              { this.getContent({ content: ingredients, key: 'ingredients', tagName: Ingredient }) }
+              { ingredients.map( i => this.getContent({ content: i, key: 'ingredients', tagName: Ingredient }) )}
             <Divider/>
             <SubTitle> Directions </SubTitle>
-            { this.getContent({ content: directions , key: 'directions', tagName: Direction }) }
+            { directions.map( d => this.getContent({ content: d , key: 'directions', tagName: Direction }) )}
             <Divider/>
             <VideoContainer>
               <Iframe width="560" height="315" src={ recipeLink } frameBorder="0" allow="autoplay; encrypted-media" allowFullScreen></Iframe>
