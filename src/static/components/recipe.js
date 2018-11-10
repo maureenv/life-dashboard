@@ -114,6 +114,20 @@ const Step = styled.div`
   margin-right: 10px;
 `
 
+const VideoContainer = styled.div`
+  width: 100%;
+  position: relative;
+  padding-top: 56.25%;
+  box-shadow: 0px 5px 20px 8px rgba(0,0,0,0.2);
+`
+
+const Iframe = styled.iframe`
+  top: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+`
+
 
 class Recipe extends Component {
 
@@ -134,7 +148,7 @@ class Recipe extends Component {
     newState['title'] = recipe.title
     newState['cuisineType'] = recipe.cuisineType
     newState['id'] = recipe.id
-    newState['recipeLink'] = recipe.recipeLink
+    newState['recipeLink'] = recipe.recipeLink.replace("watch?v=", "embed/").concat('?rel=0&amp;showinfo=0')
 
     recipe.directions.map( d => {
       newState[`${ Object.keys( d ) }_directions`] = Object.values( d )[0]
@@ -204,8 +218,7 @@ class Recipe extends Component {
     const {
       recipe
     } = this.props
-
-    const ingredients = [ 'Meat 1lb', 'Eggs 2', 'Mirin 3oz', 'Soysauce 1tbs', ]
+    console.log(this.state, 'the state', this.props, 'the props')
 
     return (
       <div>
@@ -219,6 +232,11 @@ class Recipe extends Component {
             <Divider/>
             <SubTitle> Directions </SubTitle>
             { recipe.directions.map( d => this.getDirections( d ) )}
+            <Divider/>
+            <VideoContainer>
+              <Iframe width="560" height="315" src={ recipeLink } frameBorder="0" allow="autoplay; encrypted-media" allowFullScreen></Iframe>
+            </VideoContainer>
+            <Divider/>
           </RecipeContainerInner>
         </RecipeContainer>
     {/*  <div onClick={ () => this.createRecipe() }> Click To Test </div>

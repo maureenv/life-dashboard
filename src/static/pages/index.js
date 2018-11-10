@@ -45,7 +45,6 @@ class Index extends Component {
       <Main>
         <Hero>
           <HeroTitle>Maureen’s Recipes</HeroTitle>
-          <div style={{ color: 'red', background: 'black', position: 'absolute', zIndex: '3'}}>hi</div>
         </Hero>
         <Recipes />
       </Main>
