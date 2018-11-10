@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { omit, isEqual, pick, without } from 'lodash';
 
 const propTypes = {
+  arrayPosition: PropTypes.string,
   content: PropTypes.string,
   contentKey: PropTypes.string,
   editable: PropTypes.bool,
@@ -21,6 +22,7 @@ const propTypes = {
 };
 
 const defaultProps = {
+  arrayPosition: '',
   content: '',
   contentKey: '',
   editable: true,
@@ -116,13 +118,13 @@ class ContentEditable extends Component {
   }
 
   _onChange = ev => {
-    const { sanitise, contentKey } = this.props;
+    const { arrayPosition, sanitise, contentKey } = this.props;
     const rawValue = this._element.innerText;
     const value = sanitise ? this.sanitiseValue(rawValue) : rawValue;
 
     if (this.state.value !== value) {
       this.setState({ value: rawValue }, () => {
-        this.props.onChange(contentKey, value);
+        this.props.onChange({ contentKey, value, arrayPosition });
       });
     }
   };

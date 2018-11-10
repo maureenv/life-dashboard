@@ -16,7 +16,6 @@ export const recipes = ( state = initialState, action ) => {
         recipes: action.recipes
       }
     case 'SET_RECIPE':
-    console.log(action.recipe, 'the recipe in action')
       return {
         ...state,
         recipe: action.recipe

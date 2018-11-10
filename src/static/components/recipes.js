@@ -72,7 +72,7 @@ class Recipes extends Component {
   linkToRecipe = id => {
     this.props.getRecipe( id )
   }
-          //  <Link href={{ pathname: '/recipe', query: r.id }} as={{ pathname: `/recipe/${ r.title.replace(" ", "-")}`}}>
+
   render() {
     const { recipes } = this.props
 

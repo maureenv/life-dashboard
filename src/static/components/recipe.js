@@ -149,14 +149,26 @@ class Recipe extends Component {
     newState['cuisineType'] = recipe.cuisineType
     newState['id'] = recipe.id
     newState['recipeLink'] = recipe.recipeLink.replace("watch?v=", "embed/").concat('?rel=0&amp;showinfo=0')
+    newState['directions'] = []
+    newState['ingredients'] = []
 
-    recipe.directions.map( d => {
-      newState[`${ Object.keys( d ) }_directions`] = Object.values( d )[0]
-    })
+    if ( recipe.directions.length ) {
+      recipe.directions.map( d => {
+        newState['directions'].push({ [`${ Object.keys( d ) }`]: Object.values( d )[0] })
+      })
+    }
+    else {
+      newState['directions'].push({ 1: "Add Ingredient" })
+    }
 
-    recipe.ingredients.map( i => {
-      newState[`${ Object.keys( i ) }_ingredients`] = Object.values( i )[0]
-    })
+    if ( recipe.ingredients.length ) {
+      recipe.ingredients.map( i => {
+        newState['ingredients'].push({ [`${ Object.keys( i ) }`]: Object.values( i )[0] })
+      })
+    }
+    else {
+      newState['ingredients'].push({ 1: "Add direction" })
+    }
     this.setState( newState )
   }
 
@@ -164,44 +176,31 @@ class Recipe extends Component {
     this.props.createRecipe( this.state )
   }
 
-  contentChange = (key, value) => {
-    this.setState({ [`${ key }_directions`]: value })
+  contentChange = ({ contentKey, value, arrayPosition }) => {
+    if ( value ) {
+      const valuesArray = [ ...this.state[ contentKey ] ]
+      valuesArray[ arrayPosition ] = { [arrayPosition + 1]: value }
+      this.setState({ [ contentKey ]: valuesArray })
+    }
   }
 
-  getDirections = d => {
-    const stepNumber = Object.keys( d )[0]
-    const direction = Object.values( d )[0]
+  getContent = ({ content, key, tagName }) => {
+    const isEditable = true
+    const stepNumber = Object.keys( content )[0]
+    const valuePosition = this.state[key][stepNumber -1]
+    const value = valuePosition && Object.values( valuePosition )[0]
 
     return (
       <StepContainer key={ stepNumber }>
         <Step>{ stepNumber }</Step>
         <ContentEditable
-          tagName={ Direction }
+          tagName={ tagName }
           className="my-class"
-          content={ this.state[`${ stepNumber }_directions`] }
+          content={ value }
           editable={ true }
           multiLine={ true }
-          contentKey={ stepNumber }
-          onChange={ this.contentChange }
-        />
-      </StepContainer>
-    )
-  }
-
-  getIngredients = i => {
-    const stepNumber = Object.keys( i )[0]
-    const ingredient = Object.values( i )[0]
-
-    return (
-      <StepContainer key={ stepNumber }>
-        <Step>{ stepNumber }</Step>
-        <ContentEditable
-          tagName={ Ingredient }
-          className="my-class"
-          content={ this.state[`${ stepNumber }_ingredients`] }
-          editable={ true }
-          multiLine={ true }
-          contentKey={ stepNumber }
+          contentKey={ key }
+          arrayPosition={ stepNumber - 1 }
           onChange={ this.contentChange }
         />
       </StepContainer>
@@ -214,24 +213,28 @@ class Recipe extends Component {
       cuisineType,
       recipeLink,
       id,
+      directions,
+      ingredients,
     } = this.state
+    console.log(ingredients, 'the directions')
+
     const {
       recipe
     } = this.props
-    console.log(this.state, 'the state', this.props, 'the props')
+    const isEditable = false
 
     return (
       <div>
         <Hero bg={ require(`../_res/serverImages/${ id }.jpg`)}>
-          <HeroTitle>{ title }</HeroTitle>
+          <HeroTitle>{ isEditable ? 'Add Recipe Name' : title }</HeroTitle>
         </Hero>
         <RecipeContainer>
           <RecipeContainerInner>
             <SubTitle> Ingredients </SubTitle>
-            { recipe.ingredients.map( i => this.getIngredients( i ))}
+            { ingredients.map( i => this.getContent({ content: i , key: 'ingredients', tagName: Ingredient }))}
             <Divider/>
             <SubTitle> Directions </SubTitle>
-            { recipe.directions.map( d => this.getDirections( d ) )}
+            { directions.map( i => this.getContent({ content: i , key: 'directions', tagName: Direction }))}
             <Divider/>
             <VideoContainer>
               <Iframe width="560" height="315" src={ recipeLink } frameBorder="0" allow="autoplay; encrypted-media" allowFullScreen></Iframe>
@@ -256,10 +259,17 @@ class Recipe extends Component {
 
 
 Recipe.propTypes = {
+  isEditable: PropTypes.bool,
   recipe: PropTypes.object,
 
   createRecipe: PropTypes.func,
 }
 
+Recipe.defaultProps = {
+  recipe: PropTypes.object,
+  edit: true,
+
+  createRecipe: PropTypes.func,
+}
 
 export default Recipe

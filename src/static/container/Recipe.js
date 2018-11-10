@@ -5,7 +5,6 @@ import Recipe from '../components/recipe'
 
 
 const mapStateToProps = state => {
-  console.log(recipe, 'the recipe in container')
   const { recipe } = state.recipes
   return { recipe }
 }
