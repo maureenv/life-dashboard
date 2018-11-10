@@ -8,6 +8,7 @@
   "dependencies": {
     "@zeit/next-sass": "^1.0.1",
     "autoprefixer": "^9.2.1",
+    "babel-plugin-styled-components": "^1.8.0",
     "cors-anywhere": "^0.4.1",
     "global": "^4.3.2",
     "lodash": "^4.17.11",

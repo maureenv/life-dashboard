@@ -11,6 +11,7 @@ const Hero = styled.div`
   background-size: cover;
   width: 100%;
   height: 30vh;
+  min-height: 300px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -47,7 +48,8 @@ const RecipeContainer = styled.div`
 `
 
 const RecipeContainerInner = styled.div`
-  max-width: 800px;
+  max-width: 750px;
+  padding: 0 20px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -63,7 +65,7 @@ const SubTitle = styled.h2`
   margin-bottom: 20px;
 `
 
-const Ingredient = styled.textarea`
+const Ingredient = styled.div`
   color: #666;
   font-family: 'Roboto', sans-serif;
   font-size: 18px;
@@ -75,11 +77,12 @@ const Ingredient = styled.textarea`
   width: 100%;
 `
 
-const Direction = styled.textarea`
+const Direction = styled.div`
   color: #666;
   font-family: 'Roboto', sans-serif;
   font-size: 18px;
   margin-bottom: 10px;
+  line-height: 1.3;
   display: block;
   background: none;
   border: none;
@@ -148,10 +151,9 @@ class Recipe extends Component {
   }
 
   contentChange = (key, value) => {
-      console.log(key, 'the key in content change', value, 'the value')
-      this.setState({ [`${ key }_directions`]: value })
+    this.setState({ [`${ key }_directions`]: value })
   }
-        /*<Direction value={ this.state[`${ stepNumber }_directions`] } disabled={ false } onChange={ e => this.setState({ [`${ stepNumber }_directions`]: e.target.value }) }></Direction>*/
+
   getDirections = d => {
     const stepNumber = Object.keys( d )[0]
     const direction = Object.values( d )[0]
@@ -160,10 +162,30 @@ class Recipe extends Component {
       <StepContainer key={ stepNumber }>
         <Step>{ stepNumber }</Step>
         <ContentEditable
-          tagName="div"
+          tagName={ Direction }
           className="my-class"
           content={ this.state[`${ stepNumber }_directions`] }
-          editable={true}
+          editable={ true }
+          multiLine={ true }
+          contentKey={ stepNumber }
+          onChange={ this.contentChange }
+        />
+      </StepContainer>
+    )
+  }
+
+  getIngredients = i => {
+    const stepNumber = Object.keys( i )[0]
+    const ingredient = Object.values( i )[0]
+
+    return (
+      <StepContainer key={ stepNumber }>
+        <Step>{ stepNumber }</Step>
+        <ContentEditable
+          tagName={ Ingredient }
+          className="my-class"
+          content={ this.state[`${ stepNumber }_ingredients`] }
+          editable={ true }
           multiLine={ true }
           contentKey={ stepNumber }
           onChange={ this.contentChange }
@@ -193,9 +215,7 @@ class Recipe extends Component {
         <RecipeContainer>
           <RecipeContainerInner>
             <SubTitle> Ingredients </SubTitle>
-            { ingredients.map( i => {
-              return <Ingredient key={ i } value={ i } disabled={ false }></Ingredient>
-            })}
+            { recipe.ingredients.map( i => this.getIngredients( i ))}
             <Divider/>
             <SubTitle> Directions </SubTitle>
             { recipe.directions.map( d => this.getDirections( d ) )}

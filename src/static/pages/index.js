@@ -10,6 +10,7 @@ const Hero = styled.div`
   background-size: cover;
   width: 100%;
   height: 30vh;
+  min-height: 300px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -37,17 +38,20 @@ const HeroTitle = styled.h1`
   text-shadow: -3px 0px 11px rgba(0,0,0,0.7);
 `
 
+
 class Index extends Component {
   render() {
     return (
       <Main>
         <Hero>
           <HeroTitle>Maureen’s Recipes</HeroTitle>
+          <div style={{ color: 'red', background: 'black', position: 'absolute', zIndex: '3'}}>hi</div>
         </Hero>
         <Recipes />
       </Main>
     )
   }
 }
+
 
 export default Index
