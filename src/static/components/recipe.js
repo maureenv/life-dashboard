@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import Link from 'next/link'
 import ContentEditable from './contentEditable'
 import pencil from '../_res/images/pencil.svg'
-
+import camera from '../_res/images/photo-camera.svg'
 
 
 const Hero = styled.div`
@@ -15,9 +15,10 @@ const Hero = styled.div`
   height: 30vh;
   min-height: 300px;
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
+  align-items: center;
+  justify-content: flex-end;
   position: relative;
+  flex-direction: column;
   z-index: 0;
   &::after {
     content: "";
@@ -43,6 +44,28 @@ const HeroTitle = styled.div`
   font-family: 'Anton', sans-serif;
   text-shadow: -3px 0px 11px rgba(0,0,0,0.7);
   position: relative;
+`
+
+const ImageUploader = styled.label`
+  display: flex;
+  color: #f5f5f5;
+  position: relative;
+  z-index: 1;
+  font-family: 'Roboto', sans-serif;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 50px;
+  cursor: pointer;
+  text-shadow: -3px 0px 11px rgba(0,0,0,0.7);
+  opacity: 0;
+  transition: all 0.2s ease-in-out;
+  ${ Hero }:hover & {
+    opacity: 1;
+  }
+`
+
+const Camera = styled.img`
+  width: 50px;
 `
 
 const EditableIndicator = styled.div`
@@ -189,7 +212,6 @@ class Recipe extends Component {
     else {
       newState['directions'].push({ 1: "Add Ingredient" })
     }
-
     if ( recipe.ingredients.length ) {
       recipe.ingredients.map( i => {
         newState['ingredients'].push({ [`${ Object.keys( i ) }`]: Object.values( i )[0] })
@@ -261,6 +283,15 @@ class Recipe extends Component {
       )
   }
 
+  uploadImage = e => {
+    if ( e.target.files ) {
+      this.setState({
+        image: e.target.files[0],
+        visibleImage: URL.createObjectURL(e.target.files[0])
+      })
+    }
+  }
+
   addEditableFields = () => {
     const { directions, ingredients } = this.state
     if ( Object.values( ingredients[ingredients.length -1 ] )[0] !== ( "Add Ingredient" || "" ) ) {
@@ -295,7 +326,9 @@ class Recipe extends Component {
 
     return (
       <div>
-        <Hero bg={ require(`../_res/serverImages/${ id }.jpg`)}>
+        <Hero bg={ this.state.visibleImage ? this.state.visibleImage : require(`../_res/serverImages/${ id }.jpg`)}>
+          <input style={{ display: 'none' }} id="image-upload" type="file" onChange={ e => this.uploadImage( e ) } />
+          <ImageUploader htmlFor="image-upload"><Camera src={ camera } alt="camera"/><p>Upload New Image</p></ImageUploader>
           { isEditable ? this.editSingleField({ value: title, key: 'title', tagName: HeroTitle }) : <HeroTitle>{ title }</HeroTitle> }
         </Hero>
         <RecipeContainer>
