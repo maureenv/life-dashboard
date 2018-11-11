@@ -4,6 +4,8 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import Link from 'next/link'
 import ContentEditable from './contentEditable'
+import pencil from '../_res/images/pencil.svg'
+
 
 
 const Hero = styled.div`
@@ -37,8 +39,31 @@ const HeroTitle = styled.div`
   text-transform: uppercase;
   font-size: 100px;
   margin-bottom: -10px;
+  padding: 0 30px;
   font-family: 'Anton', sans-serif;
   text-shadow: -3px 0px 11px rgba(0,0,0,0.7);
+  position: relative;
+`
+
+const EditableIndicator = styled.div`
+  ${({ show, small }) => show && `
+    &:hover {
+    position: relative;
+    z-index: 2;
+      &::after {
+        content: "";
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        fill: #fff;
+        background: url(${ pencil }) no-repeat;
+        background-size: 30px;
+        top: ${ small ? "-10px" : "-10px" };
+        right: ${ small ? "-10px" : "-15px" };
+        pointer-events: none;
+      }
+    }
+  `}
 `
 
 const RecipeContainer = styled.div`
@@ -78,6 +103,7 @@ const Ingredient = styled.div`
   background: none;
   border: none;
   padding: 3px 10px;
+  padding-right: 30px;
   min-width: 150px;
 `
 
@@ -93,6 +119,7 @@ const Direction = styled.div`
   padding: 3px 10px;
   overflow-wrap: break-word;
   min-width: 150px;
+  padding-right: 30px;
 `
 
 const Divider = styled.div`
@@ -130,7 +157,6 @@ const Iframe = styled.iframe`
   width: 100%;
   height: 100%;
 `
-
 
 class Recipe extends Component {
 
@@ -180,7 +206,6 @@ class Recipe extends Component {
   }
 
   contentChange = ({ contentKey, value, arrayPosition }) => {
-    console.log( value, 'the value')
     if ( value ) {
       const valuesArray = [ ...this.state[ contentKey ] ]
       valuesArray[ arrayPosition ] = { [arrayPosition + 1]: value }
@@ -189,19 +214,25 @@ class Recipe extends Component {
   }
 
   updateSingleField = ({ contentKey, value }) => {
+    if ( contentKey === 'title' && value === '' ) {
+      value = 'Add Title'
+    }
     this.setState({ [contentKey]: value })
   }
 
   editSingleField = ({ value, key, tagName }) => {
+    const isEditable = true
     return (
-      <ContentEditable
-        tagName={ tagName }
-        content={ value }
-        editable={ true }
-        multiLine={ true }
-        contentKey={ key }
-        onChange={ this.updateSingleField }
-      />
+      <EditableIndicator show={ isEditable } small={ false }>
+        <ContentEditable
+          tagName={ tagName }
+          content={ value }
+          editable={ true }
+          multiLine={ true }
+          contentKey={ key }
+          onBlur={ this.updateSingleField }
+        />
+      </EditableIndicator>
     )
   }
 
@@ -210,20 +241,22 @@ class Recipe extends Component {
       const valuePosition = this.state[key][stepNumber -1]
       const value = valuePosition && Object.values( valuePosition )[0]
       const newEditableValue = value === "Add Ingredient" || value === "Add Direction"
-
+      const isEditable = true
       return (
         <StepContainer key={ stepNumber }>
           <Step>{ stepNumber }</Step>
-          <ContentEditable
-            tagName={ tagName }
-            content={ value }
-            editable={ true }
-            style={{ color: newEditableValue && "#a7a7a7" }}
-            multiLine={ true }
-            contentKey={ key }
-            arrayPosition={ stepNumber - 1 }
-            onBlur={ this.contentChange }
-          />
+          <EditableIndicator show={ isEditable } small={ true }>
+            <ContentEditable
+              tagName={ tagName }
+              content={ value }
+              editable={ true }
+              style={{ color: newEditableValue && "#a7a7a7" }}
+              multiLine={ true }
+              contentKey={ key }
+              arrayPosition={ stepNumber - 1 }
+              onBlur={ this.contentChange }
+            />
+          </EditableIndicator>
         </StepContainer>
       )
   }
