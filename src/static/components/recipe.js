@@ -172,6 +172,17 @@ const VideoContainer = styled.div`
   position: relative;
   padding-top: 56.25%;
   box-shadow: 0px 5px 20px 8px rgba(0,0,0,0.2);
+  background: #666;
+  // &:after {
+  //   content: "";
+  //   background: rgba(0,0,0,1);
+  //   width: 100%;
+  //   height: 40px;
+  //   position: absolute;
+  //   top: 0;
+  //   left: 0;
+  //   pointer-events: none;
+  // }
 `
 
 const Iframe = styled.iframe`
@@ -179,6 +190,62 @@ const Iframe = styled.iframe`
   position: absolute;
   width: 100%;
   height: 100%;
+`
+
+const VideoLabel = styled.label`
+  white-space: nowrap;
+  font-weight: 600;
+`
+
+const VideoLinkContainer = styled.div`
+  opacity: 0;
+  position: absolute;
+  color: #f5f5f5;
+  z-index: 2;
+  height: 30px;
+  width: 120px;
+  background: red;
+  top: 0;
+  left: -25px;
+  display: flex;
+  font-family: 'Roboto', sans-serif;
+  align-items: center;
+  margin: 15px;
+  padding: 10px;
+  transition: all 0.3s ease-in-out;
+  &:hover {
+    width: 95%;
+  }
+  ${ VideoContainer }:hover & {
+    opacity: 1;
+  }
+  &::after {
+    content: "";
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 10px 10px 0;
+    position: absolute;
+    left: 0;
+    bottom: -10px;
+    border-color: transparent #7d0000 transparent transparent;
+  }
+`
+const VideoLink = styled.input`
+  font-family: 'Roboto', sans-serif;
+  color: #f5f5f5;
+  background: none;
+  border: none;
+  font-size: 16px;
+  width: 100%;
+  display: inline-block;
+  padding: 0 10px;
+  box-sizing: border-box;
+`
+
+const VideoEditIcon = styled.img`
+  width: 20px;
+  margin-right: 5px;
 `
 
 class Recipe extends Component {
@@ -341,6 +408,7 @@ class Recipe extends Component {
             { directions.map( d => this.getContent({ content: d , key: 'directions', tagName: Direction }) )}
             <Divider/>
             <VideoContainer>
+              <VideoLinkContainer><VideoEditIcon src={ pencil }/><VideoLabel>Video Link</VideoLabel> <VideoLink placeholder="http://wwww.youtube.com..." value={ recipeLink } onChange={ e => this.setState({ recipeLink: e.target.value })}/> </VideoLinkContainer>
               <Iframe width="560" height="315" src={ recipeLink } frameBorder="0" allow="autoplay; encrypted-media" allowFullScreen></Iframe>
             </VideoContainer>
             <Divider/>
