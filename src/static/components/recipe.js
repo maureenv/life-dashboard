@@ -173,16 +173,6 @@ const VideoContainer = styled.div`
   padding-top: 56.25%;
   box-shadow: 0px 5px 20px 8px rgba(0,0,0,0.2);
   background: #666;
-  // &:after {
-  //   content: "";
-  //   background: rgba(0,0,0,1);
-  //   width: 100%;
-  //   height: 40px;
-  //   position: absolute;
-  //   top: 0;
-  //   left: 0;
-  //   pointer-events: none;
-  // }
 `
 
 const Iframe = styled.iframe`
@@ -250,7 +240,9 @@ const VideoEditIcon = styled.img`
 
 class Recipe extends Component {
 
-  state = {}
+  state = {
+    title: "Add Title"
+  }
 
   componentWillMount() {
     this.buildState( this.props.recipe )
@@ -267,25 +259,25 @@ class Recipe extends Component {
     newState['title'] = recipe.title
     newState['cuisineType'] = recipe.cuisineType
     newState['id'] = recipe.id
-    newState['recipeLink'] = recipe.recipeLink.replace("watch?v=", "embed/").concat('?rel=0&amp;showinfo=0')
+    newState['recipeLink'] = recipe.recipeLink && recipe.recipeLink.replace("watch?v=", "embed/").concat('?rel=0&amp;showinfo=0')
     newState['directions'] = []
     newState['ingredients'] = []
 
-    if ( recipe.directions.length ) {
+    if ( recipe.directions && recipe.directions.length ) {
       recipe.directions.map( d => {
         newState['directions'].push({ [`${ Object.keys( d ) }`]: Object.values( d )[0] })
       })
     }
     else {
-      newState['directions'].push({ 1: "Add Ingredient" })
+      newState['directions'].push({ 1: "Add Direction" })
     }
-    if ( recipe.ingredients.length ) {
+    if ( recipe.ingredients && recipe.ingredients.length ) {
       recipe.ingredients.map( i => {
         newState['ingredients'].push({ [`${ Object.keys( i ) }`]: Object.values( i )[0] })
       })
     }
     else {
-      newState['ingredients'].push({ 1: "Add direction" })
+      newState['ingredients'].push({ 1: "Add Ingredient" })
     }
     this.setState( newState )
   }
@@ -383,17 +375,18 @@ class Recipe extends Component {
     } = this.state
 
     const {
-      recipe
+      recipe,
+      isNew,
     } = this.props
     const isEditable = true
-
+console.log(title, 'the title')
     if ( isEditable ) {
       this.addEditableFields()
     }
-
+//require(`../_res/serverImages/${ id }.jpg`)}
     return (
       <div>
-        <Hero bg={ this.state.visibleImage ? this.state.visibleImage : require(`../_res/serverImages/${ id }.jpg`)}>
+        <Hero bg={ this.state.visibleImage ? this.state.visibleImage : ''}>
           <input style={{ display: 'none' }} id="image-upload" type="file" onChange={ e => this.uploadImage( e ) } />
           <ImageUploader htmlFor="image-upload"><Camera src={ camera } alt="camera"/><p>Upload New Image</p></ImageUploader>
           { isEditable ? this.editSingleField({ value: title, key: 'title', tagName: HeroTitle }) : <HeroTitle>{ title }</HeroTitle> }
@@ -433,6 +426,7 @@ class Recipe extends Component {
 Recipe.propTypes = {
   isEditable: PropTypes.bool,
   recipe: PropTypes.object,
+  isNew: PropTypes.bool,
 
   createRecipe: PropTypes.func,
 }
