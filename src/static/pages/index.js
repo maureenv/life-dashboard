@@ -46,7 +46,6 @@ class Index extends Component {
         <Hero>
           <HeroTitle>Maureen’s Recipes</HeroTitle>
         </Hero>
-        <Link href={{ pathname: '/recipe', query: { isNew: true } }}> New Menu </Link>
         <Recipes />
       </Main>
     )

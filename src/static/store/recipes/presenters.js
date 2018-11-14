@@ -1,4 +1,4 @@
-export const requestCreateRecipe = json => {
+export const requestSaveRecipe = json => {
   const directions = []
   const entries = Object.entries( json )
   for ( const [key, value] of entries ) {

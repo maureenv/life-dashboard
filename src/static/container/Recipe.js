@@ -5,8 +5,11 @@ import Recipe from '../components/recipe'
 
 
 const mapStateToProps = state => {
-  const { recipe } = state.recipes
-  return { recipe }
+  const { recipe, isEditable } = state.recipes
+  return {
+    isEditable,
+    recipe
+  }
 }
 
 

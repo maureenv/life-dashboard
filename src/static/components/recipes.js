@@ -73,11 +73,16 @@ class Recipes extends Component {
     this.props.getRecipe( id )
   }
 
+  createNewRecipe = () => {
+    this.props.createNewRecipe()
+  }
+
   render() {
     const { recipes } = this.props
 
     return (
       <RecipesContainer>
+        <div onClick={ () => this.createNewRecipe() }> Create New Recipe </div>
         <RecipesContainerInner>
           { recipes.map( r =>
             <RecipeCard bg={ require(`../_res/serverImages/${ r.id }.jpg`)} onClick={ () => this.linkToRecipe( r.id ) }>
@@ -94,6 +99,7 @@ class Recipes extends Component {
 Recipes.propTypes = {
   recipes: PropTypes.array,
 
+  createNewRecipe: PropTypes.func,
   getRecipes: PropTypes.func,
   getRecipe: PropTypes.func,
 }

@@ -47,7 +47,7 @@ const HeroTitle = styled.div`
 `
 
 const ImageUploader = styled.label`
-  display: flex;
+  display: ${ props => props.show ? 'flex' : 'none'};
   color: #f5f5f5;
   position: relative;
   z-index: 1;
@@ -57,11 +57,7 @@ const ImageUploader = styled.label`
   margin-bottom: 50px;
   cursor: pointer;
   text-shadow: -3px 0px 11px rgba(0,0,0,0.7);
-  opacity: 0;
   transition: all 0.2s ease-in-out;
-  ${ Hero }:hover & {
-    opacity: 1;
-  }
 `
 
 const Camera = styled.img`
@@ -188,7 +184,7 @@ const VideoLabel = styled.label`
 `
 
 const VideoLinkContainer = styled.div`
-  opacity: 0;
+  opacity: ${ props => props.show? 1 : 0 };
   position: absolute;
   color: #f5f5f5;
   z-index: 2;
@@ -241,17 +237,33 @@ const VideoEditIcon = styled.img`
 class Recipe extends Component {
 
   state = {
-    title: "Add Title"
+    title: "Add Title",
+    directions: [],
+    ingredients: [],
   }
 
   componentWillMount() {
-    this.buildState( this.props.recipe )
+    const { isEditable, recipe } = this.props
+
+    if ( recipe.id ) {
+      this.buildState( this.props.recipe )
+    }
+    else {
+      this.newForm()
+    }
   }
 
   componentWillReceiveProps( nextProps ) {
     if ( nextProps.recipe !== this.props.recipe ) {
       this.buildState( nextProps.recipe )
     }
+  }
+
+  newForm() {
+    const { directions, ingredients } = this.state
+    directions.push({ 1: "Add Direction" })
+    ingredients.push({ 1: "Add Ingredient" })
+    this.setState({ visibleImage: '' })
   }
 
   buildState( recipe ) {
@@ -282,8 +294,8 @@ class Recipe extends Component {
     this.setState( newState )
   }
 
-  createRecipe = () => {
-    this.props.createRecipe( this.state )
+  saveRecipe = () => {
+    this.props.saveRecipe( this.state )
   }
 
   contentChange = ({ contentKey, value, arrayPosition }) => {
@@ -319,8 +331,8 @@ class Recipe extends Component {
 
   getContent = ({ content, key, tagName }) => {
       const stepNumber = Object.keys( content )[0]
-      const valuePosition = this.state[key][stepNumber -1]
-      const value = valuePosition && Object.values( valuePosition )[0]
+      const valueArrayPosition = this.state[key][stepNumber -1]
+      const value = valueArrayPosition && Object.values( valueArrayPosition )[0]
       const newEditableValue = value === "Add Ingredient" || value === "Add Direction"
       const isEditable = true
       return (
@@ -353,6 +365,7 @@ class Recipe extends Component {
 
   addEditableFields = () => {
     const { directions, ingredients } = this.state
+
     if ( Object.values( ingredients[ingredients.length -1 ] )[0] !== ( "Add Ingredient" || "" ) ) {
       const newArray = [ ...ingredients, { [ingredients.length + 1 ]: "Add Ingredient" } ]
       this.setState({ ingredients: newArray })
@@ -376,19 +389,18 @@ class Recipe extends Component {
 
     const {
       recipe,
-      isNew,
+      isEditable
     } = this.props
-    const isEditable = true
-console.log(title, 'the title')
+
     if ( isEditable ) {
       this.addEditableFields()
     }
-//require(`../_res/serverImages/${ id }.jpg`)}
+
     return (
       <div>
-        <Hero bg={ this.state.visibleImage ? this.state.visibleImage : ''}>
+        <Hero bg={ this.state.visibleImage ? this.state.visibleImage : recipe.id && require(`../_res/serverImages/${ id }.jpg`)}>
           <input style={{ display: 'none' }} id="image-upload" type="file" onChange={ e => this.uploadImage( e ) } />
-          <ImageUploader htmlFor="image-upload"><Camera src={ camera } alt="camera"/><p>Upload New Image</p></ImageUploader>
+          <ImageUploader show={ isEditable } htmlFor="image-upload"><Camera src={ camera } alt="camera"/><p>Upload New Image</p></ImageUploader>
           { isEditable ? this.editSingleField({ value: title, key: 'title', tagName: HeroTitle }) : <HeroTitle>{ title }</HeroTitle> }
         </Hero>
         <RecipeContainer>
@@ -401,22 +413,12 @@ console.log(title, 'the title')
             { directions.map( d => this.getContent({ content: d , key: 'directions', tagName: Direction }) )}
             <Divider/>
             <VideoContainer>
-              <VideoLinkContainer><VideoEditIcon src={ pencil }/><VideoLabel>Video Link</VideoLabel> <VideoLink placeholder="http://wwww.youtube.com..." value={ recipeLink } onChange={ e => this.setState({ recipeLink: e.target.value })}/> </VideoLinkContainer>
+              <VideoLinkContainer show={ !recipe.id }><VideoEditIcon src={ pencil }/><VideoLabel>Video Link</VideoLabel> <VideoLink placeholder="http://wwww.youtube.com..." value={ recipeLink } onChange={ e => this.setState({ recipeLink: e.target.value })}/> </VideoLinkContainer>
               <Iframe width="560" height="315" src={ recipeLink } frameBorder="0" allow="autoplay; encrypted-media" allowFullScreen></Iframe>
             </VideoContainer>
             <Divider/>
           </RecipeContainerInner>
         </RecipeContainer>
-    {/*  <div onClick={ () => this.createRecipe() }> Click To Test </div>
-      <label>Recipe Title</label><input type="text" onChange={ e => this.setState({ title: e.target.value })}/>
-      <br/>
-      <label>Recipe Link</label><input type="text" onChange={ e => this.setState({ recipeLink: e.target.value })}/>
-      <br/>
-      <label>Cuisine type</label><input type="text" onChange={ e => this.setState({ cuisineType: e.target.value })}/>
-      <br/>
-      <label>Directions</label><input type="text" onBlur={ e => this.setState({ [`${1}_directions`]: e.target.value }) }/>
-      <label>Directions</label><input type="text" onBlur={ e => this.setState({ [`${2}_directions`]: e.target.value }) }/>
-      <label>Image</label><input type="file" onChange={ e => this.setState({ image: e.target.files[0] }) } />*/}
       </div>
     )
   }
@@ -426,16 +428,14 @@ console.log(title, 'the title')
 Recipe.propTypes = {
   isEditable: PropTypes.bool,
   recipe: PropTypes.object,
-  isNew: PropTypes.bool,
 
-  createRecipe: PropTypes.func,
+  saveRecipe: PropTypes.func,
 }
 
 Recipe.defaultProps = {
   recipe: PropTypes.object,
-  edit: true,
 
-  createRecipe: PropTypes.func,
+  saveRecipe: PropTypes.func,
 }
 
 export default Recipe
