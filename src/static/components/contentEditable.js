@@ -18,6 +18,7 @@ const propTypes = {
   onKeyDown: PropTypes.func,
   onPaste: PropTypes.func,
   onChange: PropTypes.func,
+  onFocus: PropTypes.func,
   styled: PropTypes.bool, // If element is a styled component (uses innerRef instead of ref)
 };
 
@@ -37,6 +38,7 @@ const defaultProps = {
   onKeyDown: () => {},
   onPaste: () => {},
   onChange: () => {},
+  onFocus: () => {},
   styled: false,
 };
 
@@ -152,6 +154,18 @@ class ContentEditable extends Component {
     this.props.onBlur({ contentKey, value, arrayPosition });
   };
 
+  _onFocus = ev => {
+    const { sanitise, arrayPosition, contentKey } = this.props;
+    const rawValue = this._element.innerText;
+    const value = sanitise ? this.sanitiseValue(rawValue) : rawValue;
+    // // We finally set the state to the sanitised version (rather than the `rawValue`) because we're blurring the field.
+    // this.setState({ value }, () => {
+    //   this.props.onChange({ contentKey, value, arrayPosition });
+    //   this.forceUpdate();
+    // });
+    this.props.onFocus({ contentKey, value, arrayPosition });
+  };
+
   _onKeyDown = ev => {
     const { maxLength, multiLine } = this.props;
     const value = this._element.innerText;
@@ -206,6 +220,7 @@ class ContentEditable extends Component {
         onBlur={this._onBlur}
         onInput={this._onChange}
         onKeyDown={this._onKeyDown}
+        onFocus={ this._onFocus }
         onKeyUp={this._onKeyUp}
         onPaste={this._onPaste}
       />
