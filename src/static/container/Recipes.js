@@ -13,12 +13,14 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   const createNewRecipe = () => coordinators.createNewRecipe( dispatch )
+  const deleteRecipe = id => api.deleteRecipe( dispatch, id )
   const getRecipe = id => api.getRecipe( dispatch, id )
   const getRecipes = () => api.getRecipes( dispatch )
   const saveRecipe = recipe => api.saveRecipe( dispatch, recipe )
 
   return {
     //createNewRecipe: () => dispatch( actions.createRecipe( true ) ),
+    deleteRecipe,
     createNewRecipe,
     getRecipe,
     getRecipes,

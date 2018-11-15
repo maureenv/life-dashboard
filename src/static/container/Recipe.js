@@ -13,4 +13,13 @@ const mapStateToProps = state => {
 }
 
 
-export default connect( mapStateToProps, undefined )( Recipe )
+const mapDispatchToProps = dispatch => {
+  const saveRecipe = recipe => api.saveRecipe( dispatch, recipe )
+
+  return {
+    saveRecipe,
+  }
+}
+
+
+export default connect( mapStateToProps, mapDispatchToProps )( Recipe )

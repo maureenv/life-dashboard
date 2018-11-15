@@ -77,16 +77,22 @@ class Recipes extends Component {
     this.props.createNewRecipe()
   }
 
+  deleteRecipe = id => {
+    this.props.deleteRecipe( id )
+  }
+
   render() {
     const { recipes } = this.props
-
+    console.log(recipes, 'the new recipes')
+ //onClick={ () => this.linkToRecipe( r.id ) }
     return (
       <RecipesContainer>
         <div onClick={ () => this.createNewRecipe() }> Create New Recipe </div>
         <RecipesContainerInner>
           { recipes.map( r =>
-            <RecipeCard bg={ require(`../_res/serverImages/${ r.id }.jpg`)} onClick={ () => this.linkToRecipe( r.id ) }>
+            <RecipeCard bg={ require(`../_res/serverImages/${ r.id }.jpg`)}>
               <RecipeTitle>{ r.title }</RecipeTitle>
+              <div style={{ position: 'absolute', zIndex: 3 }} onClick={ () => this.deleteRecipe( r.id ) }> Delete </div>
             </RecipeCard>
           )}
           </RecipesContainerInner>
@@ -100,6 +106,7 @@ Recipes.propTypes = {
   recipes: PropTypes.array,
 
   createNewRecipe: PropTypes.func,
+  deleteRecipe: PropTypes.func,
   getRecipes: PropTypes.func,
   getRecipe: PropTypes.func,
 }

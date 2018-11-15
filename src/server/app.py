@@ -27,14 +27,17 @@ def allowed_file(filename):
 
 @app.route('/recipes')
 def get_recipes():
-    print('getting all recipes')
     return jsonify(Recipe.get_recipes())
 
 @app.route('/recipes/<string:id>')
 def get_recipe(id):
-    print(jsonify(Recipe.get_recipe(id)), 'the recipe I found')
-    #return jsonify(Recipe.get_recipes())
     return jsonify(Recipe.get_recipe(id))
+
+@app.route('/recipes/delete/<string:id>', methods=['DELETE'])
+def delete_recipe(id):
+    jsonify(Recipe.delete_recipe(id))
+    #return jsonify(Recipe.get_recipes())
+    return make_response(get_recipes())
 
 @app.route('/recipes/new', methods=['POST', 'GET'])
 def create_recipe():
@@ -43,10 +46,8 @@ def create_recipe():
     ingredients = data['ingredients']
     directions = data['directions']
     recipe_link = data['recipe_link']
-    cuisine_type = data['cuisine_type']
 
-    recipe = Recipe.create(title, ingredients, directions, recipe_link, cuisine_type)
-    # return jsonify(Recipe.get_recipes())
+    recipe = Recipe.create(title, ingredients, directions, recipe_link )
     return jsonify(recipe)
 
 @app.route('/upload', methods=['POST'])
@@ -56,17 +57,14 @@ def upload_file():
             # flash('No file part')
             return 'No file part'
         id = request.form['id']
-        print(id, 'the id')
         file = request.files['file']
         file_prefix = file.filename.rsplit('.', 1)[1].lower()
         file.filename = id + "." + file_prefix
-        print(file, 'the file')
         if file.filename == '':
             flash('No selected file')
             return 'No selected file'
 
         if file and allowed_file(file.filename):
-            print('in allowed files')
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return send_from_directory(app.config['UPLOAD_FOLDER'], filename)

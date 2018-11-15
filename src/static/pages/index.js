@@ -44,7 +44,7 @@ class Index extends Component {
     return (
       <Main>
         <Hero>
-          <HeroTitle>Maureen’s Recipes</HeroTitle>
+          <HeroTitle>Yum Yum Yum</HeroTitle>
         </Hero>
         <Recipes />
       </Main>

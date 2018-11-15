@@ -320,7 +320,6 @@ class Recipe extends Component {
       if ( value === "Add Ingredient" || value === "Add Direction") {
         const valuesArray = [ ...this.state[ contentKey ] ]
         valuesArray[ arrayPosition ] = { [arrayPosition + 1]: "" }
-        console.log(valuesArray, 'AFTER')
         this.setState({ [ contentKey ]: valuesArray })
       }
     }
@@ -397,7 +396,7 @@ class Recipe extends Component {
       this.setState({ ingredients: newArray })
     }
 
-    else if ( Object.values( directions[directions.length -1 ] )[0] !== ( "Add Direction" || "" || undefined ) ) {
+    else if ( Object.values( directions[directions.length -1 ] )[0] !== "Add Direction") {
       const newArray = [ ...directions, { [directions.length + 1 ]: "Add Direction" } ]
       this.setState({ directions: newArray })
     }
@@ -430,6 +429,7 @@ class Recipe extends Component {
           { isEditable ? this.editSingleField({ value: title, key: 'title', tagName: HeroTitle }) : <HeroTitle>{ title }</HeroTitle> }
         </Hero>
         <RecipeContainer>
+          <div onClick={ () => this.saveRecipe() }> Save Recipe </div>
           <RecipeContainerInner>
             <Divider/>
             <SubTitle> Ingredients </SubTitle>
