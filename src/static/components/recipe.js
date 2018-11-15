@@ -299,12 +299,10 @@ class Recipe extends Component {
   }
 
   contentChange = ({ contentKey, value, arrayPosition }) => {
-    console.log('on blur called')
     if ( value ) {
-      console.log(value, 'has value')
       const valuesArray = [ ...this.state[ contentKey ] ]
       valuesArray[ arrayPosition ] = { [arrayPosition + 1]: value }
-      this.setState({ [ contentKey ]: valuesArray }, () => this.addEditableFields() )
+      this.setState({ [ contentKey ]: valuesArray }, () => this.addEditableFields())
     } else {
       this.addEditableFields()
     }
@@ -322,7 +320,8 @@ class Recipe extends Component {
       if ( value === "Add Ingredient" || value === "Add Direction") {
         const valuesArray = [ ...this.state[ contentKey ] ]
         valuesArray[ arrayPosition ] = { [arrayPosition + 1]: "" }
-        this.setState({ [ contentKey ]: valuesArray }, () => console.log( {[contentKey]: valuesArray}, 'the changed value'))
+        console.log(valuesArray, 'AFTER')
+        this.setState({ [ contentKey ]: valuesArray })
       }
     }
     // }
@@ -387,15 +386,18 @@ class Recipe extends Component {
 
   addEditableFields = () => {
     const { directions, ingredients } = this.state
+    if ( Object.values( ingredients[ingredients.length -1 ] )[0] === "" || Object.values( directions[directions.length -1 ] )[0] === "" ) {
+      ingredients[ingredients.length -1 ] = { [ingredients.length ]: "Add Ingredient" }
+      directions[directions.length -1 ] = { [directions.length ]: "Add Direction" }
+      this.setState({ ingredients: ingredients, directions: directions })
+    }
 
-console.log( Object.values( ingredients[ingredients.length -1 ] )[0], 'the value of ingredient')
-    if ( Object.values( ingredients[ingredients.length -1 ] )[0] !==  "Add Ingredient") {
-      console.log(Object.values( ingredients[ingredients.length -1 ] )[0], 'im in loop')
+    else if ( Object.values( ingredients[ingredients.length -1 ] )[0] !==  "Add Ingredient") {
       const newArray = [ ...ingredients, { [ingredients.length + 1 ]: "Add Ingredient" } ]
       this.setState({ ingredients: newArray })
     }
 
-    if ( Object.values( directions[directions.length -1 ] )[0] !== ( "Add Direction" || "" || undefined ) ) {
+    else if ( Object.values( directions[directions.length -1 ] )[0] !== ( "Add Direction" || "" || undefined ) ) {
       const newArray = [ ...directions, { [directions.length + 1 ]: "Add Direction" } ]
       this.setState({ directions: newArray })
     }
