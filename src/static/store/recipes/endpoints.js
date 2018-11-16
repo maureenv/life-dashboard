@@ -33,26 +33,30 @@ export const getRecipe = ( dispatch, id ) => {
 
 
 export const getRecipes = dispatch => {
-  fetch( 'http://127.0.0.1:3001/recipes' )
-  .then( response => response.json() )
-  .then( data => dispatch( actions.getRecipes( presenters.responseGeneric( data ) )))
-  .catch(( err ) => console.log( err, 'the error' ))
+  // fetch( 'http://127.0.0.1:3001/recipes' )
+  // .then( response => response.json() )
+  // .then( data => dispatch( actions.getRecipes( presenters.responseGeneric( data ) )))
+  // .catch(( err ) => console.log( err, 'the error' ))
+  console.log('In recipe endpoint')
 }
 
 
 export const saveRecipe = recipe => {
   const data = presenters.requestSaveRecipe( recipe )
-  fetch('http://127.0.0.1:3001/recipes/new', {
+  const newRecipe = fetch('http://127.0.0.1:3001/recipes/new', {
     method: "POST",
     body: JSON.stringify( data ),
     headers: {'Content-Type': 'application/json'},
   })
   .then( response => response.json() )
-  .then( data => {
-        console.log(recipe, 'the recipe image')
-     api.uploadFile( data._id, recipe.image )
-    const recipe = presenters.responseGeneric( data )
-    return recipe
+  .then( async data => {
+    const image = await api.uploadFile( data._id, recipe.image )
+    if ( image ) {
+      const recipe = presenters.responseGeneric( data )
+      return recipe
+    }
   })
   .catch(( err )=> console.log( err, 'the error' ))
+
+  return newRecipe
 }

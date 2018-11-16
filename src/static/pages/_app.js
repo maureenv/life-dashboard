@@ -16,12 +16,12 @@ const GlobalStyle = createGlobalStyle`
 
 class MyApp extends App {
   render () {
-    const { Component, reduxStore } = this.props
+    const { Component, reduxStore, pageProps } = this.props
     return (
       <Container>
         <GlobalStyle/>
         <Provider store={ reduxStore }>
-          <Component />
+          <Component { ...pageProps } />
         </Provider>
       </Container>
     )

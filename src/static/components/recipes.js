@@ -66,10 +66,12 @@ const RecipeTitle = styled.p`
 class Recipes extends Component {
 
   componentDidMount() {
+    console.log(this.props.recipes, 'the props in will mount')
     this.props.getRecipes()
   }
 
   componentWillReceiveProps( nextProps ) {
+    console.log(nextProps.recipes, "WILL PROPS")
     if ( nextProps.recipes !== this.props.recipes ) {
       this.setState({ recipes: nextProps.recipes })
     }

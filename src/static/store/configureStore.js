@@ -35,6 +35,7 @@ export default ( App ) => {
       let appProps = {}
       if (typeof App.getInitialProps === 'function') {
         appProps = await App.getInitialProps( appContext )
+        console.log(appProps, 'the app props')
       }
 
       return {

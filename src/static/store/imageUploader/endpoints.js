@@ -1,6 +1,5 @@
 export const uploadFile = ( id, file ) => {
   const formData = new FormData()
-  console.log(id, 'the image id', file, 'the file')
   formData.append( "file", file )
   formData.append( "id", id )
 
@@ -9,8 +8,10 @@ export const uploadFile = ( id, file ) => {
     body: formData,
   }
 
-  fetch('http://127.0.0.1:3001/upload', headers )
+  const image = fetch('http://127.0.0.1:3001/upload', headers )
   .then( response => response.blob() )
   .then( data => data )
   .catch( err => console.log( err, 'the error' ))
+  console.log(image, 'the image')
+  return image
 }

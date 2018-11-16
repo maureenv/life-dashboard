@@ -19,8 +19,7 @@ const mapDispatchToProps = dispatch => {
     saveRecipe: async data => {
       const recipe = await api.saveRecipe( data )
       if ( recipe ) {
-        console.log(recipe, data, 'the recipe in container')
-            //api.uploadFile( data._id, recipe.image )
+        console.log(recipe, 'the recipe in CONTAINER')
         dispatch( actions.setRecipe({ isEditable: true, recipe }))
       }
     },

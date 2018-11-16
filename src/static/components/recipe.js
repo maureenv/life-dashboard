@@ -242,7 +242,7 @@ class Recipe extends Component {
     ingredients: [],
   }
 
-  componentWillMount() {
+   componentWillMount() {
     const { isEditable, recipe } = this.props
 
     if ( recipe.id ) {
