@@ -14,10 +14,22 @@ const mapStateToProps = state => {
 
 
 const mapDispatchToProps = dispatch => {
-  const saveRecipe = recipe => api.saveRecipe( dispatch, recipe )
 
   return {
-    saveRecipe,
+    saveRecipe: async data => {
+      const recipe = await api.saveRecipe( data )
+      if ( recipe ) {
+        console.log(recipe, data, 'the recipe in container')
+            //api.uploadFile( data._id, recipe.image )
+        dispatch( actions.setRecipe({ isEditable: true, recipe }))
+      }
+    },
+    deleteRecipe: async id => {
+      const data = await api.deleteRecipe( id )
+      if ( data ) {
+        dispatch( actions.getRecipes( data ))
+      }
+    }
   }
 }
 

@@ -20,6 +20,12 @@ const RecipesContainerInner = styled.div`
   max-width: 1000px;
   width: 100%;
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  &::after {
+    content: "";
+    flex-basis: 650px;
+  }
 `
 
 const RecipeCard = styled.div`
@@ -77,22 +83,16 @@ class Recipes extends Component {
     this.props.createNewRecipe()
   }
 
-  deleteRecipe = id => {
-    this.props.deleteRecipe( id )
-  }
-
   render() {
     const { recipes } = this.props
-    console.log(recipes, 'the new recipes')
- //onClick={ () => this.linkToRecipe( r.id ) }
+
     return (
       <RecipesContainer>
         <div onClick={ () => this.createNewRecipe() }> Create New Recipe </div>
         <RecipesContainerInner>
           { recipes.map( r =>
-            <RecipeCard bg={ require(`../_res/serverImages/${ r.id }.jpg`)}>
+            <RecipeCard bg={ require(`../_res/serverImages/${ r.id }.jpg`)} onClick={ () => this.linkToRecipe( r.id ) }>
               <RecipeTitle>{ r.title }</RecipeTitle>
-              <div style={{ position: 'absolute', zIndex: 3 }} onClick={ () => this.deleteRecipe( r.id ) }> Delete </div>
             </RecipeCard>
           )}
           </RecipesContainerInner>
@@ -106,7 +106,6 @@ Recipes.propTypes = {
   recipes: PropTypes.array,
 
   createNewRecipe: PropTypes.func,
-  deleteRecipe: PropTypes.func,
   getRecipes: PropTypes.func,
   getRecipe: PropTypes.func,
 }

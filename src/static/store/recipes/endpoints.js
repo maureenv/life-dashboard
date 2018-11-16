@@ -5,12 +5,17 @@ import presenters from '../presenters'
 import api from '../api'
 
 
-export const deleteRecipe = ( dispatch, id ) => {
+export const deleteRecipe = id => {
+  console.log(id, 'the id in endpoint')
   fetch( `http://127.0.0.1:3001/recipes/delete/${ id }`, {
     method: "DELETE",
   })
   .then( response => response.json() )
-  .then( data => dispatch( actions.getRecipes( presenters.responseGeneric( data ) )))
+  .then( data => {
+    data = presenters.responseGeneric( data )
+    Router.push('/index' )
+    return data
+  })
   .catch(( err ) => console.log( err, 'the error' ))
 }
 
@@ -35,7 +40,7 @@ export const getRecipes = dispatch => {
 }
 
 
-export const saveRecipe = ( dispatch, recipe ) => {
+export const saveRecipe = recipe => {
   const data = presenters.requestSaveRecipe( recipe )
   fetch('http://127.0.0.1:3001/recipes/new', {
     method: "POST",
@@ -44,8 +49,10 @@ export const saveRecipe = ( dispatch, recipe ) => {
   })
   .then( response => response.json() )
   .then( data => {
-    api.uploadFile( data._id, recipe.image )
-    dispatch( actions.setRecipe( presenters.responseGeneric( data ) ))
+        console.log(recipe, 'the recipe image')
+     api.uploadFile( data._id, recipe.image )
+    const recipe = presenters.responseGeneric( data )
+    return recipe
   })
   .catch(( err )=> console.log( err, 'the error' ))
 }

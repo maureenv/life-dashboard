@@ -254,6 +254,7 @@ class Recipe extends Component {
   }
 
   componentWillReceiveProps( nextProps ) {
+    component( nextProps, 'the next props in recipe')
     if ( nextProps.recipe !== this.props.recipe ) {
       this.buildState( nextProps.recipe )
     }
@@ -328,6 +329,10 @@ class Recipe extends Component {
     //   this.setState({ testing: 'test' })
     //   this.addEditableFields()
     // }
+  }
+
+  deleteRecipe = id => {
+    this.props.deleteRecipe( id )
   }
 
   editSingleField = ({ value, key, tagName }) => {
@@ -428,6 +433,7 @@ class Recipe extends Component {
           <ImageUploader show={ isEditable } htmlFor="image-upload"><Camera src={ camera } alt="camera"/><p>Upload New Image</p></ImageUploader>
           { isEditable ? this.editSingleField({ value: title, key: 'title', tagName: HeroTitle }) : <HeroTitle>{ title }</HeroTitle> }
         </Hero>
+        { recipe.id && <div style={{ position: 'absolute', zIndex: 3 }} onClick={ () => this.deleteRecipe( id ) }> Delete </div> }
         <RecipeContainer>
           <div onClick={ () => this.saveRecipe() }> Save Recipe </div>
           <RecipeContainerInner>
@@ -452,16 +458,17 @@ class Recipe extends Component {
 
 
 Recipe.propTypes = {
+  deleteRecipe: PropTypes.func,
   isEditable: PropTypes.bool,
   recipe: PropTypes.object,
 
   saveRecipe: PropTypes.func,
 }
 
-Recipe.defaultProps = {
-  recipe: PropTypes.object,
 
-  saveRecipe: PropTypes.func,
+Recipe.defaultProps = {
+  recipe: {},
 }
+
 
 export default Recipe

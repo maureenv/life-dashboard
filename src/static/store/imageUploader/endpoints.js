@@ -1,5 +1,6 @@
 export const uploadFile = ( id, file ) => {
   const formData = new FormData()
+  console.log(id, 'the image id', file, 'the file')
   formData.append( "file", file )
   formData.append( "id", id )
 
