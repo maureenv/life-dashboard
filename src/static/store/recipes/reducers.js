@@ -26,7 +26,6 @@ export const recipes = ( state = initialState, action ) => {
         isEditable: action.isEditable,
       }
     case 'CREATE_RECIPE':
-    console.log(action, 'the action')
       return {
         ...state,
         isEditable: true,

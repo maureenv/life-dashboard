@@ -6,7 +6,6 @@ import api from '../api'
 
 
 export const deleteRecipe = id => {
-  console.log(id, 'the id in endpoint')
   fetch( `http://127.0.0.1:3001/recipes/delete/${ id }`, {
     method: "DELETE",
   })
@@ -37,7 +36,6 @@ export const getRecipes = dispatch => {
   // .then( response => response.json() )
   // .then( data => dispatch( actions.getRecipes( presenters.responseGeneric( data ) )))
   // .catch(( err ) => console.log( err, 'the error' ))
-  console.log('In recipe endpoint')
 }
 
 

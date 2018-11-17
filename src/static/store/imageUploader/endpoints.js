@@ -12,6 +12,5 @@ export const uploadFile = ( id, file ) => {
   .then( response => response.blob() )
   .then( data => data )
   .catch( err => console.log( err, 'the error' ))
-  console.log(image, 'the image')
   return image
 }

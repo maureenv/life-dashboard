@@ -3,7 +3,6 @@ import Link from 'next/link'
 import Main from '../components/pageLayout'
 import heroBG from '../_res/images/hero-background.jpg'
 import styled from 'styled-components'
-import Recipes from '../container/Recipes'
 import fetch from 'isomorphic-unfetch'
 
 import { connect } from 'react-redux'
@@ -104,8 +103,8 @@ const RecipeTitle = styled.p`
 
 class Index extends Component {
   static async getInitialProps() {
-    const req = await fetch('http://127.0.0.1:3001/recipes')
-    const data = await req.json()
+    const res = await fetch('http://127.0.0.1:3001/recipes')
+    const data = await res.json()
     const recipes = presenters.responseGeneric( data )
     return { recipes }
   }
@@ -127,12 +126,15 @@ class Index extends Component {
           <HeroTitle>Yum Yum Yum</HeroTitle>
         </Hero>
         <RecipesContainer>
-          <div onClick={ () => this.createNewRecipe() }> Create New Recipe </div>
+          {/*<div onClick={ () => this.createNewRecipe() }> Create New Recipe </div>*/}
+          <Link as={`/recipe/new`} href={`/recipe`}> Create New Recipe </Link>
           <RecipesContainerInner>
             { recipes.map( r =>
-              <RecipeCard key={ r.id } bg={ require(`../_res/serverImages/${ r.id }.jpg`)} onClick={ () => this.linkToRecipe( r.id ) }>
-                <RecipeTitle>{ r.title }</RecipeTitle>
-              </RecipeCard>
+              <Link as={ `/recipes/${r.id}` } href={`/recipe?id=${ r.id }`}>
+                <RecipeCard key={ r.id } bg={ require(`../_res/serverImages/${ r.id }.jpg`)}>
+                  <RecipeTitle>{ r.title }</RecipeTitle>
+                </RecipeCard>
+              </Link>
             )}
             </RecipesContainerInner>
         </RecipesContainer>
@@ -140,12 +142,6 @@ class Index extends Component {
     )
   }
 }
-
-
-//const mapStateToProps = state => {
-  // const { recipe, recipes } = state.recipes
-  // return { recipe, recipes }
-//}
 
 
 const mapDispatchToProps = dispatch => {
