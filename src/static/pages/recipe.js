@@ -244,7 +244,6 @@ const VideoEditIcon = styled.img`
 class Recipe extends Component {
   static async getInitialProps( context ) {
     const { id } = context.query
-    console.log(id, 'THE ID')
     const res = await fetch(`http://127.0.0.1:3001/recipes/${ id }`)
     const data = await res.json()
     const recipe = presenters.responseGeneric( data )

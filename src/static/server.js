@@ -1,34 +1,35 @@
 const express = require('express')
 const next = require('next')
-const axios = require("axios");
 
-const port = parseInt(process.env.PORT, 10) || 3000;
-const dev = process.env.NODE_ENV !== "production";
-const nextApp = next({ dev });
-const nextHandle = nextApp.getRequestHandler();
+const dev = process.env.NODE_ENV !== 'production'
+const app = next({ dev })
+const handle = app.getRequestHandler()
 
+app.prepare()
+.then(() => {
+  const server = express()
 
-nextApp.prepare()
-    .then(() => {
-        const server = express();
-        server.get('/recipes/:id', (req, res) => {
-            axios
-                .get('http://127.0.0.1:3001')
-                .then(response => {
-                    const queryParams = { id: req.params.id }
-                    nextApp.render(req, res, "/recipe", queryParams )
-                })
-                .catch(reason => console.log(reason))
-        })
-        server.get("*", (req, res) => {
-            return nextHandle(req, res)
-        });
+  server.get('/recipes/:id', (req, res) => {
+      const actualPage = '/recipe'
+      const queryParams = { id: req.params.id }
+      app.render(req, res, actualPage, queryParams)
+  })
 
-        server.listen(port, (err) => {
-            if (err) {
-              console.log(err, 'THE ERROR')
-                throw err;
-            }
-            console.log(`> Ready on http://localhost:${port}`)
-        });
-    });
+  server.get('/recipe/new', () => {
+      const actualPage = '/recipe'
+      app.render( actualPage )
+  })
+
+  server.get('*', (req, res) => {
+    return handle(req, res)
+  })
+
+  server.listen(3000, (err) => {
+    if (err) throw err
+    console.log('> READDY -------------- on localhost:3000')
+  })
+})
+.catch((ex) => {
+  console.error(ex.stack, 'THE ERRORRRRR')
+  process.exit(1)
+})
