@@ -6,6 +6,12 @@ import styled from 'styled-components'
 import Recipes from '../container/Recipes'
 import fetch from 'isomorphic-unfetch'
 
+import { connect } from 'react-redux'
+import actions from '../store/actions'
+import presenters from '../store/presenters'
+import coordinators from '../store/coordinators'
+import api from '../store/api'
+
 const Hero = styled.div`
   background: url(${ heroBG }) no-repeat center center fixed;
   background-size: cover;
@@ -38,6 +44,60 @@ const HeroTitle = styled.h1`
   font-family: 'Anton', sans-serif;
   text-shadow: -3px 0px 11px rgba(0,0,0,0.7);
 `
+
+const RecipesContainer = styled.div`
+  width: 100%;
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+const RecipesContainerInner = styled.div`
+  max-width: 1000px;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  &::after {
+    content: "";
+    flex-basis: 650px;
+  }
+`
+
+const RecipeCard = styled.div`
+  width: 300px;
+  height: 250px;
+  position: relative;
+  cursor: pointer;
+  background: url(${ props => props.bg }) no-repeat center center;
+  background-size: cover;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  margin: 10px;
+  &::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgb(0,0,0);
+    background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+  }
+`
+
+const RecipeTitle = styled.p`
+  font-family: 'Roboto', sans-serif;
+  color: #fff;
+  font-weight: 500;
+  font-size: 20px;
+  position: relative;
+  padding: 10px 20px;
+  margin-bottom: 10px;
+  width: 100%;
+  z-index: 1;
+  border-bottom: 1px solid #fff;
+`
 //webprojects/learnnextjs-demo
 //https://aerolab.co/blog/react-nextjs-pwa GOOD TUTORILA
     // https://stackoverflow.com/questions/40889738/next-js-react-component-getinitialprops-doesnt-bind-props
@@ -45,23 +105,64 @@ const HeroTitle = styled.h1`
 class Index extends Component {
   static async getInitialProps() {
     const req = await fetch('http://127.0.0.1:3001/recipes')
-    const recipes = await req.json()
-    return recipes
+    const data = await req.json()
+    const recipes = presenters.responseGeneric( data )
+    return { recipes }
   }
+
+  linkToRecipe = id => {
+    this.props.getRecipe( id )
+  }
+
+  createNewRecipe = () => {
+    this.props.createNewRecipe()
+  }
+
   render() {
-    const recipes = Object.values(this.props)
-    console.log(recipes, 'the recipes, in INDEX')
+    const { recipes } = this.props
+
     return (
       <Main>
         <Hero>
           <HeroTitle>Yum Yum Yum</HeroTitle>
         </Hero>
-                <p>{ recipes[0]._id }</p>
-        <Recipes recipes={ recipes }/>
+        <RecipesContainer>
+          <div onClick={ () => this.createNewRecipe() }> Create New Recipe </div>
+          <RecipesContainerInner>
+            { recipes.map( r =>
+              <RecipeCard key={ r.id } bg={ require(`../_res/serverImages/${ r.id }.jpg`)} onClick={ () => this.linkToRecipe( r.id ) }>
+                <RecipeTitle>{ r.title }</RecipeTitle>
+              </RecipeCard>
+            )}
+            </RecipesContainerInner>
+        </RecipesContainer>
       </Main>
     )
   }
 }
 
 
-export default Index
+//const mapStateToProps = state => {
+  // const { recipe, recipes } = state.recipes
+  // return { recipe, recipes }
+//}
+
+
+const mapDispatchToProps = dispatch => {
+  const createNewRecipe = () => coordinators.createNewRecipe( dispatch )
+  const deleteRecipe = id => api.deleteRecipe( dispatch, id )
+  const getRecipe = id => api.getRecipe( dispatch, id )
+  const getRecipes = () => api.getRecipes( dispatch )
+  const saveRecipe = recipe => api.saveRecipe( dispatch, recipe )
+
+  return {
+    deleteRecipe,
+    createNewRecipe,
+    getRecipe,
+    getRecipes,
+    saveRecipe,
+  }
+}
+
+
+export default connect( undefined, mapDispatchToProps )( Index )
