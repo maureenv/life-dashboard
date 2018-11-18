@@ -5,8 +5,6 @@ import {
 } from './actions'
 
 const initialState = {
-  isEditable: false,
-  isNew: false,
   recipe: [],
   recipes: [],
 }
@@ -28,7 +26,6 @@ export const recipes = ( state = initialState, action ) => {
     case 'CREATE_RECIPE':
       return {
         ...state,
-        isEditable: true,
         recipe: initialState.recipe
       }
     default:

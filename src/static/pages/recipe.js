@@ -260,6 +260,7 @@ class Recipe extends Component {
    componentWillMount() {
     const { isEditable, recipe } = this.props
     if ( recipe && recipe.id ) {
+      this.setState({ isEditable: true })
       this.buildState( this.props.recipe )
     }
     else {
@@ -268,7 +269,6 @@ class Recipe extends Component {
   }
 
   componentWillReceiveProps( nextProps ) {
-    console.log( nextProps, 'the next props in recipe')
     if ( nextProps.recipe !== this.props.recipe ) {
       this.buildState( nextProps.recipe )
     }
@@ -313,6 +313,10 @@ class Recipe extends Component {
     this.props.saveRecipe( this.state )
   }
 
+  saveEdits = () => {
+    this.props.updateRecipe( this.state )
+  }
+
   contentChange = ({ contentKey, value, arrayPosition }) => {
     if ( value ) {
       const valuesArray = [ ...this.state[ contentKey ] ]
@@ -345,7 +349,7 @@ class Recipe extends Component {
   }
 
   editSingleField = ({ value, key, tagName }) => {
-    const isEditable = true
+    const { isEditable } = this.state
     return (
       <EditableIndicator show={ isEditable } small={ false }>
         <ContentEditable
@@ -361,12 +365,13 @@ class Recipe extends Component {
   }
 
   getContent = ({ content, key, tagName }) => {
+      const { isEditable } = this.state
       const stepNumber = Object.keys( content )[0]
       const valueArrayPosition = this.state[key][stepNumber -1]
       let value = valueArrayPosition && Object.values( valueArrayPosition )[0]
 
       const newEditableValue = value === "Add Ingredient" || value === "Add Direction"
-      const isEditable = true
+
       return (
         <StepContainer key={ stepNumber }>
           <Step>{ stepNumber }</Step>
@@ -445,6 +450,7 @@ class Recipe extends Component {
         { recipe && recipe.id && <div style={{ position: 'absolute', zIndex: 3 }} onClick={ () => this.deleteRecipe( id ) }> Delete </div> }
         <RecipeContainer>
           <div onClick={ () => this.saveRecipe() }> Save Recipe </div>
+          <div onClick={ () => this.saveEdits() }> Save Edits </div>
           <RecipeContainerInner>
             <Divider/>
             <SubTitle> Ingredients </SubTitle>
@@ -479,7 +485,6 @@ class Recipe extends Component {
 
 Recipe.propTypes = {
   deleteRecipe: PropTypes.func,
-  isEditable: PropTypes.bool,
 //  recipe: PropTypes.object,
 
   saveRecipe: PropTypes.func,
@@ -492,10 +497,9 @@ Recipe.defaultProps = {
 
 
 const mapStateToProps = state => {
-  const { recipe, isEditable } = state.recipes
+  const { recipe } = state.recipes
   return {
-    isEditable,
-    //recipe
+
   }
 }
 
@@ -503,10 +507,16 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
 
   return {
+    updateRecipe: async data => {
+      const recipe = await api.updateRecipe( data )
+      if ( recipe ) {
+        dispatch( actions.setRecipe( recipe ))
+      }
+    },
     saveRecipe: async data => {
       const recipe = await api.saveRecipe( data )
       if ( recipe ) {
-        dispatch( actions.setRecipe({ isEditable: true, recipe }))
+        dispatch( actions.setRecipe( recipe ))
       }
     },
     deleteRecipe: async id => {

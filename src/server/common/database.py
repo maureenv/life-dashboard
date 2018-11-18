@@ -29,3 +29,20 @@ class Database(object):
     @staticmethod
     def delete_one(collection, query):
         return Database.DATABASE[collection].remove(query)
+
+    @staticmethod
+    def update(collection, query, data):
+        return Database.DATABASE[collection].update(query, data)
+
+
+    # db.books.update(
+    #    { "_id": "1" },
+    #    {
+    #      $inc: { stock: 5 },
+    #      $set: {
+    #        "item": "ABC123",
+    #        "info.publisher": "2222",
+    #        "tags": [ "software" ],
+    #        "ratings.1": { by: "xyz", rating: 3 }
+    #      }
+    #    }

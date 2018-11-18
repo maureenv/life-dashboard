@@ -23,6 +23,19 @@ class Recipe(object):
         return data
 
     @classmethod
+    def update(Cls, id, title, ingredients, directions, recipe_link ):
+        data = {
+            '_id': id,
+            'title': title,
+            'ingredients': ingredients,
+            'directions': directions,
+            'recipe_link': recipe_link,
+        }
+        Database.update(collection='recipes', query={ '_id': id }, data=data )
+
+        return data
+
+    @classmethod
     def get_recipes(Cls, return_models=False):
         print( 'GET RECIPES CALLED')
         recipes = Database.find(collection='recipes', query={})

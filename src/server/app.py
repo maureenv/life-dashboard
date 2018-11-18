@@ -4,7 +4,6 @@ from flask import Flask, flash, url_for, redirect, render_template, request, ses
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from server.common.database import Database
-from server.models.test import Test
 from server.models.recipe import Recipe
 
 UPLOAD_FOLDER = '/Users/maureenvogel/webprojects/python/life-dashboard/src/static/_res/serverImages'
@@ -48,6 +47,18 @@ def create_recipe():
     recipe_link = data['recipe_link']
 
     recipe = Recipe.create(title, ingredients, directions, recipe_link )
+    return jsonify(recipe)
+
+@app.route('/recipes/update', methods=['PUT'])
+def update_recipe():
+    data = request.get_json()
+    id = data['_id']
+    title = data['title']
+    ingredients = data['ingredients']
+    directions = data['directions']
+    recipe_link = data['recipe_link']
+
+    recipe = Recipe.update(id, title, ingredients, directions, recipe_link )
     return jsonify(recipe)
 
 @app.route('/upload', methods=['POST'])

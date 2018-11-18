@@ -6,5 +6,8 @@ export const requestSaveRecipe = json => {
     title: json.title,
     directions: json.directions,
   }
+  if ( json.id ) {
+    data._id = json.id
+  }
   return data
 }

@@ -38,6 +38,24 @@ export const getRecipes = dispatch => {
   // .catch(( err ) => console.log( err, 'the error' ))
 }
 
+export const updateRecipe = recipe => {
+  const data = presenters.requestSaveRecipe( recipe )
+  console.log(data, 'the data going to be UDPATED')
+  const updatedRecipe = fetch(`http://127.0.0.1:3001/recipes/update`, {
+    method: "PUT",
+    body: JSON.stringify( data ),
+    headers: {'Content-Type': 'application/json'},
+  })
+  .then( response => response.json() )
+  .then( async data => {
+    const recipe = presenters.responseGeneric( data )
+    Router.push(`/recipes/${ recipe.id }` )
+  })
+  .catch(( err )=> console.log( err, 'the error' ))
+
+  return updatedRecipe
+}
+
 
 export const saveRecipe = recipe => {
   const data = presenters.requestSaveRecipe( recipe )
@@ -50,7 +68,10 @@ export const saveRecipe = recipe => {
   .then( async data => {
     const image = await api.uploadFile( data._id, recipe.image )
     if ( image ) {
+      console.log(image, 'the image')
       const recipe = presenters.responseGeneric( data )
+      console.log(recipe.id, 'this recipe now has an id')
+      Router.push(`/recipes/${ recipe.id }` )
       return recipe
     }
   })

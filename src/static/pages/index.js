@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Link from 'next/link'
 import Main from '../components/pageLayout'
 import heroBG from '../_res/images/hero-background.jpg'
+import recipeIcon from '../_res/images/recipe.svg'
 import styled from 'styled-components'
 import fetch from 'isomorphic-unfetch'
 
@@ -38,10 +39,18 @@ const HeroTitle = styled.h1`
   position: relative;
   z-index: 1;
   text-transform: uppercase;
-  font-size: 80px;
+  font-size: 90px;
   margin-bottom: -10px;
   font-family: 'Anton', sans-serif;
   text-shadow: -3px 0px 11px rgba(0,0,0,0.7);
+`
+
+const CreateButton = styled.button`
+  appearance: none;
+`
+
+const CreateButtonImg = styled.img`
+  width: 20px;
 `
 
 const RecipesContainer = styled.div`
@@ -97,9 +106,7 @@ const RecipeTitle = styled.p`
   z-index: 1;
   border-bottom: 1px solid #fff;
 `
-//webprojects/learnnextjs-demo
-//https://aerolab.co/blog/react-nextjs-pwa GOOD TUTORILA
-    // https://stackoverflow.com/questions/40889738/next-js-react-component-getinitialprops-doesnt-bind-props
+
 
 class Index extends Component {
   static async getInitialProps() {
@@ -126,16 +133,19 @@ class Index extends Component {
           <HeroTitle>Yum Yum Yum</HeroTitle>
         </Hero>
         <RecipesContainer>
-          {/*<div onClick={ () => this.createNewRecipe() }> Create New Recipe </div>*/}
-          <Link as={`/recipe/new`} href={`/recipe`}> Create New Recipe </Link>
           <RecipesContainerInner>
-            { recipes.map( r =>
-              <Link as={ `/recipes/${r.id}` } href={`/recipe?id=${ r.id }`}>
-                <RecipeCard key={ r.id } bg={ require(`../_res/serverImages/${ r.id }.jpg`)}>
-                  <RecipeTitle>{ r.title }</RecipeTitle>
+              <Link as={`/recipe/new`} href={`/recipe`}>
+                <RecipeCard>
+                  <RecipeTitle>Create New Recipe </RecipeTitle>
                 </RecipeCard>
               </Link>
-            )}
+              { recipes.map( r =>
+                <Link as={ `/recipes/${r.id}` } href={`/recipe?id=${ r.id }`}>
+                  <RecipeCard key={ r.id } bg={ require(`../_res/serverImages/${ r.id }.jpg`)}>
+                    <RecipeTitle>{ r.title }</RecipeTitle>
+                  </RecipeCard>
+                </Link>
+              )}
             </RecipesContainerInner>
         </RecipesContainer>
       </Main>

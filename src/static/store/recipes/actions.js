@@ -8,8 +8,7 @@ export const getRecipes = recipes => ({
   recipes
 })
 
-export const setRecipe = ({ isEditable, recipe }) => ({
+export const setRecipe = ( recipe ) => ({
   type: 'SET_RECIPE',
-  isEditable,
   recipe,
 })
