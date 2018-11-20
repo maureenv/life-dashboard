@@ -1,5 +1,5 @@
 <!-- https://www.youtube.com/watch?v=E_eMhH1M37I --> connect to iphone debugger
-mobile at home 192.168.1.8:3000
+
 # Life Dashboard
 A dashboard for all of life's necessities.
 
