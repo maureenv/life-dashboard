@@ -1,16 +1,18 @@
 import React, { Component } from 'react'
 import Link from 'next/link'
-import Main from '../components/pageLayout'
-import heroBG from '../_res/images/hero-background.jpg'
-import recipeIcon from '../_res/images/recipe.svg'
 import styled from 'styled-components'
 import fetch from 'isomorphic-unfetch'
+import Main from '../components/pageLayout'
 
 import { connect } from 'react-redux'
 import actions from '../store/actions'
 import presenters from '../store/presenters'
 import coordinators from '../store/coordinators'
 import api from '../store/api'
+
+import heroBG from '../_res/images/hero-background.jpg'
+import recipeIcon from '../_res/images/recipe.svg'
+import addNew from '../_res/images/add-new.jpg'
 
 const Hero = styled.div`
   background: url(${ heroBG }) no-repeat center center fixed;
@@ -39,7 +41,7 @@ const HeroTitle = styled.h1`
   position: relative;
   z-index: 1;
   text-transform: uppercase;
-  font-size: 90px;
+  font-size: 100px;
   margin-bottom: -10px;
   font-family: 'Anton', sans-serif;
   text-shadow: -3px 0px 11px rgba(0,0,0,0.7);
@@ -84,6 +86,7 @@ const RecipeCard = styled.div`
   display: flex;
   align-items: flex-end;
   margin: 10px;
+  transition: all 0.2s ease-in-out;
   &::after {
     content: "";
     position: absolute;
@@ -91,6 +94,9 @@ const RecipeCard = styled.div`
     height: 100%;
     background: rgb(0,0,0);
     background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+  }
+  &:hover {
+    transform: scale(1.03);
   }
 `
 
@@ -135,7 +141,7 @@ class Index extends Component {
         <RecipesContainer>
           <RecipesContainerInner>
               <Link as={`/recipe/new`} href={`/recipe`}>
-                <RecipeCard>
+                <RecipeCard bg={ addNew }>
                   <RecipeTitle>Create New Recipe </RecipeTitle>
                 </RecipeCard>
               </Link>

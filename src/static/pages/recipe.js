@@ -12,6 +12,9 @@ import presenters from '../store/presenters'
 
 import ContentEditable from '../components/contentEditable'
 import pencil from '../_res/images/pencil.svg'
+import pencilDark from '../_res/images/pencil-dark.svg'
+import pencilWhite from '../_res/images/pencil-white.svg'
+import trash from '../_res/images/trash.svg'
 import camera from '../_res/images/photo-camera.svg'
 
 
@@ -51,6 +54,17 @@ const HeroTitle = styled.div`
   font-family: 'Anton', sans-serif;
   text-shadow: -3px 0px 11px rgba(0,0,0,0.7);
   position: relative;
+`
+
+const ActionButtonsContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+`
+
+const ActionButton = styled.img`
+  width: 30px;
+  padding: 10px;
 `
 
 const ImageUploader = styled.label`
@@ -100,11 +114,13 @@ const RecipeContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 `
 
 const RecipeContainerInner = styled.div`
   max-width: 750px;
   padding: 0 20px;
+  box-sizing: border-box;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -234,6 +250,18 @@ const VideoLink = styled.input`
   display: inline-block;
   padding: 0 10px;
   box-sizing: border-box;
+  ::-webkit-input-placeholder {
+  color: pink;
+  }
+  ::-moz-placeholder { /
+    color: pink;
+  }
+  :-ms-input-placeholder {
+    color: pink;
+  }
+  :-moz-placeholder {
+    color: pink;
+  }
 `
 
 const VideoEditIcon = styled.img`
@@ -260,7 +288,6 @@ class Recipe extends Component {
    componentWillMount() {
     const { isEditable, recipe } = this.props
     if ( recipe && recipe.id ) {
-      this.setState({ isEditable: true })
       this.buildState( this.props.recipe )
     }
     else {
@@ -344,6 +371,12 @@ class Recipe extends Component {
     }
   }
 
+  changeVideoLink = e => {
+    const newLink = e.target.value.replace("watch?v=", "embed/").concat('?rel=0&amp;showinfo=0')
+    this.setState({ recipeLink: newLink })
+
+  }
+
   deleteRecipe = id => {
     this.props.deleteRecipe( id )
   }
@@ -355,7 +388,7 @@ class Recipe extends Component {
         <ContentEditable
           tagName={ tagName }
           content={ value }
-          editable={ true }
+          editable={ isEditable && true }
           multiLine={ true }
           contentKey={ key }
           onBlur={ this.updateSingleField }
@@ -380,7 +413,7 @@ class Recipe extends Component {
               tagName={ tagName }
               focus={ value.length === 0 }
               content={ value }
-              editable={ true }
+              editable={ isEditable && true }
               style={{ color: newEditableValue && "#a7a7a7" }}
               multiLine={ true }
               contentKey={ key }
@@ -447,12 +480,18 @@ class Recipe extends Component {
           <ImageUploader show={ isEditable } htmlFor="image-upload"><Camera src={ camera } alt="camera"/><p>Upload New Image</p></ImageUploader>
           { isEditable ? this.editSingleField({ value: title, key: 'title', tagName: HeroTitle }) : <HeroTitle>{ title }</HeroTitle> }
         </Hero>
-        { recipe && recipe.id && <div style={{ position: 'absolute', zIndex: 3 }} onClick={ () => this.deleteRecipe( id ) }> Delete </div> }
         <RecipeContainer>
-          <div onClick={ () => this.saveRecipe() }> Save Recipe </div>
-          <div onClick={ () => this.saveEdits() }> Save Edits </div>
+          { !recipe && <div style={{ left: 0, top: 0, position: 'absolute' }} onClick={ () => this.saveRecipe() }> Save Recipe </div> }
+          {/*<div onClick={ () => this.saveEdits() }> Save Edits </div>*/}
           <RecipeContainerInner>
-            <Divider/>
+            { recipe && recipe.id ?
+              <ActionButtonsContainer>
+                <ActionButton src={ pencilDark } alt="edit" onClick={ () => this.setState({ isEditable: !isEditable }) }/>
+                <ActionButton src={ trash } alt="delete" onClick={ () => this.deleteRecipe( id ) }/>
+              </ActionButtonsContainer>
+              :
+              <Divider/>
+            }
             <SubTitle> Ingredients </SubTitle>
               { ingredients.map( i => this.getContent({ content: i, key: 'ingredients', tagName: Ingredient }) )}
             <Divider/>
@@ -460,7 +499,11 @@ class Recipe extends Component {
             { directions.map( d => this.getContent({ content: d , key: 'directions', tagName: Direction }) )}
             <Divider/>
             <VideoContainer>
-              <VideoLinkContainer show={ !( recipe && recipe.id ) }><VideoEditIcon src={ pencil }/><VideoLabel>Video Link</VideoLabel> <VideoLink placeholder="http://wwww.youtube.com..." value={ recipeLink } onChange={ e => this.setState({ recipeLink: e.target.value })}/> </VideoLinkContainer>
+              { isEditable &&
+                <VideoLinkContainer show={ !( recipe && recipe.id ) || isEditable }><VideoEditIcon src={ pencilWhite }/><VideoLabel>Video Link</VideoLabel>
+                  <VideoLink placeholder="http://wwww.youtube.com..." value={ recipeLink } onBlur={ e => this.changeVideoLink( e ) }/>
+                </VideoLinkContainer>
+              }
               <Iframe width="560" height="315" src={ recipeLink } frameBorder="0" allow="autoplay; encrypted-media" allowFullScreen></Iframe>
             </VideoContainer>
             <Divider/>
@@ -471,36 +514,10 @@ class Recipe extends Component {
   }
 }
 
-// Request URL: http://127.0.0.1:3001/recipes/new
-// Request Method: POST
-// Status Code: 200 OK
-// Remote Address: 127.0.0.1:3001
-// Referrer Policy: no-referrer-when-downgrade
-
-// Request URL: http://127.0.0.1:3001/recipes/d3c4749ca7e34fb3958e3ee5f6ec8925
-// Request Method: GET
-// Status Code: 200 OK
-// Remote Address: 127.0.0.1:3001
-
 
 Recipe.propTypes = {
   deleteRecipe: PropTypes.func,
-//  recipe: PropTypes.object,
-
   saveRecipe: PropTypes.func,
-}
-
-
-Recipe.defaultProps = {
-//  recipe: {},
-}
-
-
-const mapStateToProps = state => {
-  const { recipe } = state.recipes
-  return {
-
-  }
 }
 
 
@@ -529,4 +546,4 @@ const mapDispatchToProps = dispatch => {
 }
 
 
-export default connect( mapStateToProps, mapDispatchToProps )( Recipe )
+export default connect( undefined, mapDispatchToProps )( Recipe )
