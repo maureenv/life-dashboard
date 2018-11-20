@@ -1,7 +1,5 @@
-<!-- https://www.youtube.com/watch?v=E_eMhH1M37I --> connect to iphone debugger
-
-# Life Dashboard
-A dashboard for all of life's necessities.
+# Recipe Book
+A simple site to keep track of all the good recipes I find.
 
 ## Python Notes
 Start a new python project:
